@@ -288,6 +288,16 @@ function fnToggleOptionalPcrs() {
     $("#optional_pcrs_list").toggle()
 }
 
+//----Added by dav10re-----
+
+function fnToggleOptionalIMA() {
+    $("#optional_ima_att").toggle()
+}
+
+//-------------------------
+
+
+
 
 function fnShowLoginCredentials() {
     str = "<a href=\"#\" onclick=\"fnShowLoginCredentials()\">";
