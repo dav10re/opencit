@@ -96,10 +96,10 @@
                             <!-- Added by dav10re -->
                             
                             <div class="singleDiv">
-                                <div class="labelDiv"><a data-i18n="input.optional_pcrs" href="#" onclick="fnToggleOptionalIMA()">Optional IMA Attestation:</a> <input type="image" onclick="showDialogRequiredPCRValues()" src="images/helpicon.png" class="helperImageClass"></div>
+                                <div class="labelDiv"><a href="#" onclick="fnToggleOptionalIMA()">Optional IMA Attestation:</a></div>
                                 <div  id="optional_ima_att" style="display: none;">
-                                    <div class="valueDivConfig" id="IMADiv">
-                                        <input type="checkbox" id="required_ima_att" name="ima_att">
+                                    <div class="valueDivConfig" id="IMAValues">
+                                        <input type="checkbox" id="required_ima_att" name="10">
                                     </div>
                                 </div>
                             </div>

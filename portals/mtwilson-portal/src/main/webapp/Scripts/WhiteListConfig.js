@@ -439,12 +439,23 @@ function fnGetWhiteListConfigData() {
 	config.biosPCRs = str;
 	
 	str = "";
-	$('#vmmPCRsValues').find('input:checked').each(function() {
+	
+    //----------- Added by dav10re --------------
+    
+    //I try to insert pcr 10 in such way that it will show in the report
+    
+    $('#IMAValues').find('input:checked').each(function() {
+        str+=$(this).attr('name')+",";
+    });
+    
+    
+    //-------------------------------------------
+    
+    $('#vmmPCRsValues').find('input:checked').each(function() {
 		str+=$(this).attr('name')+",";
 	});
 	str = str.substring(0, str.length-1);
 	config.vmmPCRs = str;
-	
 	
 	config.hostLocation = null;//$('#location_host').val();
 	config.registerHost = false;
