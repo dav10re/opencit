@@ -659,8 +659,23 @@ public class TAHelper {
             Map<DigestAlgorithm, List<Pcr>> pcrs = pcrManifest.getPcrsMap();
             for(Map.Entry<DigestAlgorithm, List<Pcr>> e : pcrs.entrySet()) {
                 for(Pcr p : e.getValue()) {
-                    if (this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1"))
+                    
+                    //----------- Added by dav10re -------------
+                    
+                    // Commenting original if clause
+                    //if (this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1"))
+                        //continue;
+                    
+                    /* Added new if clause in such way that I get the pcr 10 sha1 that is IMA pcr
+                     In paritcular I want to exclude the pcr 10 SHA256 value in such way that the only pcr 10 value that it will be present in attestation report, it will be a SHA1 otherwise maybe the server could have a problem to choose the right one (SHA1 or SHA256) if I don't change the code in other classes.
+                    */
+                     
+                    if (this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1") && !p.getIndex().toString().equals("10")
+                        || this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA256") && p.getIndex().toString().equals("10"))
                         continue;
+                    
+                    //-----------------------------------------
+                    
                     xtw.writeStartElement("PCRInfo");
                     xtw.writeAttribute("ComponentName", p.getIndex().toString());
                     xtw.writeAttribute("DigestValue", p.getValue().toString().toUpperCase());
