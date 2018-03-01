@@ -670,7 +670,7 @@ public class TAHelper {
                      In paritcular I want to exclude the pcr 10 SHA256 value in such way that the only pcr 10 value that it will be present in attestation report, it will be a SHA1 otherwise maybe the server could have a problem to choose the right one (SHA1 or SHA256) if I don't change the code in other classes.
                     */
                      
-                    if (this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1") && !p.getIndex().toString().equals("10")
+                    if ((this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1") && !p.getIndex().toString().equals("10"))
                         || this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA256") && p.getIndex().toString().equals("10"))
                         continue;
                     
