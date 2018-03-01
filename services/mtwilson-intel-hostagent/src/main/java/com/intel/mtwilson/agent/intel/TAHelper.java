@@ -671,7 +671,7 @@ public class TAHelper {
                     */
                      
                     if ((this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA1") && !p.getIndex().toString().equals("10"))
-                        || this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA256") && p.getIndex().toString().equals("10"))
+                        || (this.host != null && this.host.TpmVersion.equals("2.0") && !this.isHostWindows && e.getKey().toString().equalsIgnoreCase("SHA256") && p.getIndex().toString().equals("10")))
                         continue;
                     
                     //-----------------------------------------
