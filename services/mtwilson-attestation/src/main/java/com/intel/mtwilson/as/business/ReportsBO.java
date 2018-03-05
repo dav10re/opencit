@@ -475,7 +475,8 @@ public class ReportsBO {
                 //--------- Added by dav10re ---------
                 /* I insert this if clause in such way that I can return the pcr 10 value, otherwise it will be rejected. In fact when getPcrBank method is called, this may return a SHA256 string and the pcr 10 won't pass the if clause because it is a SHA1 value.  */
                 
-                if (pcrMAnifest.getName().equals("10"))
+                logger.debug("pcr manifest for: {}", pcrManifest.getName());
+                if (pcrManifest.getName().equals("10"))
                     return pcrManifest;
                 
                 //-----------------------------------
