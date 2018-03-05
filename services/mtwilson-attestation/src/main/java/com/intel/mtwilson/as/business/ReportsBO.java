@@ -334,6 +334,15 @@ public class ReportsBO {
         logger.debug("getPcrManifestLog - Got data from mw_pcr_manifest table with pcr name {} and value {}.", tblPcrManifest.getName(), tblPcrManifest.getValue());
         PcrLogReport manifest = new PcrLogReport();
         manifest.setName(Integer.parseInt(log.getManifestName()));
+        
+        //--------- Added by dav10re ---------
+        
+        //Only for debug
+        
+        logger.debug("getManifestName: {}  and manifest value {}", log.getManifestName(), log.getManifestValue);
+        
+        //------------------------------------
+        
         manifest.setValue(log.getManifestValue());
         manifest.setVerifiedOn(log.getUpdatedOn());
         manifest.setTrustStatus(getTrustStatus(log.getTrustStatus()));
@@ -482,7 +491,7 @@ public class ReportsBO {
                     return pcrManifest;
                 }*/
                 
-                if ((pcrManifest.getName().equals(manifestName) && pcrManifest.getPcrBank().equals(tblHosts.getPcrBank())) || (pcrManifest.getName().equals("10") && pcrManifest.getPcrBank().equalsIgnoreCase("SHA1"))) {
+                if ((pcrManifest.getName().equals(manifestName) && pcrManifest.getPcrBank().equals(tblHosts.getPcrBank())) || (pcrManifest.getName().equals(manifestName) && pcrManifest.getName().equals("10") && pcrManifest.getPcrBank().equalsIgnoreCase("SHA1"))) {
                     return pcrManifest;
                 }
                 
