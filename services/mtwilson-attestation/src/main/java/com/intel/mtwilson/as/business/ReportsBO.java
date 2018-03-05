@@ -339,7 +339,7 @@ public class ReportsBO {
         
         //Only for debug
         
-        logger.debug("getManifestName: {}  and manifest value {}", log.getManifestName(), log.getManifestValue);
+        logger.debug("getManifestName: {}  and manifest value {}", log.getManifestName(), log.getManifestValue());
         
         //------------------------------------
         
