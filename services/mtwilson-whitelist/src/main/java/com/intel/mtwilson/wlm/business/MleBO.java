@@ -520,6 +520,14 @@ public class MleBO {
                     pcrManifest.setName(manifestData.getName());
                     // Bug: 375. Need to ensure we are accepting only valid hex strings.
                     validateWhitelistValue(manifestData.getPcrBank(), manifestData.getName(), manifestData.getValue()); // throws exception if invalid
+                    
+                    //-------- Added by dav10re -------
+                    
+                    log.debug("add pcr manifest with VALUE {} and BANK {}", manifestData.getValue(),manifestData.getPcrBank());
+                    
+                    //---------------------------------
+                    
+                    
                     pcrManifest.setValue(manifestData.getValue());
                     pcrManifest.setPcrBank(manifestData.getPcrBank());
                     // @since 1.1 we are relying on the audit log for "created on", "created by", etc. type information
