@@ -1299,6 +1299,13 @@ public class HostBO {
                     if(hostObj.PcrBanks != null && !hostObj.PcrBanks.isEmpty()) {
                         List<String> banks = Arrays.asList(hostObj.PcrBanks.split(" "));
                         for (String bank : banks) {
+                            
+                            //------------ Added  by dav10re -------------
+                            
+                            log.debug("CONFIGURE WhiteList: PCR {} and bank {}", vmmPCR, bank);
+                            
+                            //--------------------------------------------
+                            
                             vmmMFList.add(new ManifestData(vmmPCR, "", bank));
                         }   
                     } else {
