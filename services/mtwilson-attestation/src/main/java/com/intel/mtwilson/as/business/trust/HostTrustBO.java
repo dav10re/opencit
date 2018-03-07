@@ -1067,7 +1067,22 @@ public class HostTrustBO {
                 if( report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf(host.getPcrBank()), Integer.valueOf(vmmPcrIndex)) == null ) {
                     throw new ASException(ErrorCode.AS_HOST_MANIFEST_MISSING_PCRS); // will cause the host to show up as "unknown" since there will not be any ta log records
                 }
-                pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf(host.getPcrBank()), Integer.valueOf(vmmPcrIndex)).getValue().toString());
+               
+                    //--------------- Added by dav10re --------------
+                
+                    //host.getPcrBank returns SHA256 because the best pcr bank is chosen, with the following if clause  I try to get sha1 value from the host report
+                
+                log.debug("Creating the Manifest: pcr {} and value {}", vmmPcrIndex, Integer.valueOf(vmmPcrIndex)).getValue().toString());
+                
+                    if(vmmPcrIndex.equals("10"))
+                        pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf("SHA1"), Integer.valueOf(vmmPcrIndex)).getValue().toString());
+                    else{
+                        
+                        pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf(host.getPcrBank()), Integer.valueOf(vmmPcrIndex)).getValue().toString());
+                        
+                    }
+                    //-----------------------------------------------
+                //pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf(host.getPcrBank()), Integer.valueOf(vmmPcrIndex)).getValue().toString());
                 
                 String key = vmmPcrIndex + "-VMM";                
                 taLogMap.put(key, pcr);
