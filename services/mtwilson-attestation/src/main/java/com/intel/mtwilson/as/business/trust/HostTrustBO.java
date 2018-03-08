@@ -1072,11 +1072,11 @@ public class HostTrustBO {
                 
                     //host.getPcrBank returns SHA256 because the best pcr bank is chosen, with the following if clause  I try to get sha1 value from the host report
                 
-                log.debug("Creating the Manifest: pcr {} and value {}", vmmPcrIndex, Integer.valueOf(vmmPcrIndex)).getValue().toString());
+                log.debug("Creating the Manifest: pcr {} and value {}", vmmPcrIndex, report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf("SHA1"), Integer.valueOf(vmmPcrIndex)).getValue().toString());
                 
-                    if(vmmPcrIndex.equals("10"))
+                if(vmmPcrIndex.equals("10")){
                         pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf("SHA1"), Integer.valueOf(vmmPcrIndex)).getValue().toString());
-                    else{
+                }else{
                         
                         pcr.setManifestValue(report.getHostReport().pcrManifest.getPcr(DigestAlgorithm.valueOf(host.getPcrBank()), Integer.valueOf(vmmPcrIndex)).getValue().toString());
                         
