@@ -43,8 +43,22 @@ public class IntelTpmDaHostTrustPolicyFactory extends IntelHostTrustPolicyFactor
         
         for(Iterator<Rule> it = pcrConstantRules.iterator(); it.hasNext();) {
             PcrMatchesConstant r = (PcrMatchesConstant)it.next();
+            
+            //----------- Added by dav10re ------------
+            //Only for debug
+            
+            log.debug("PcrConstantRules created for BIOS: rule with pcr {}", r.getExpectedPcr().toString());
+            
+            //-----------------------------------------
+            
             if(r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank())) {
                 it.remove();
+                
+                //---------- Added by dav10re -----------
+                
+                log.debug("PcrConstantRules removed rule for BIOS: rule with pcr {}", r.getExpectedPcr().toString());
+                
+                //---------------------------------------
             }            
         }
         
@@ -66,8 +80,29 @@ public class IntelTpmDaHostTrustPolicyFactory extends IntelHostTrustPolicyFactor
         
         for (Iterator<Rule> it = pcrConstantRules.iterator(); it.hasNext();) {
             PcrMatchesConstant r = (PcrMatchesConstant) it.next();
-            if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank())) {
+            
+            //----------- Added by dav10re ------------
+            //Only for debug
+            
+            log.debug("PcrConstantRules created for VMM: rule with pcr {}", r.getExpectedPcr().toString());
+            
+            /* The following if will remove the rule for pcr 10 because it doesn't have a sha256 value (the best bank for the host is sha256)*/
+            
+            //The original if clause
+            /*
+             
+             if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank())) {
+             it.remove();
+             
+             */
+            
+            //if there is the pcr 10, do not remove the PcrConstantRule
+            
+            if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank()) && !r.getExpectedPcr().getIndex().toString().equals("10")) {
                 it.remove();
+            
+            //-----------------------------------------
+                
             } else {
                 log.debug("IntelTpmDaHostTrustPolicyFactory: PcrMatchesConstant rule added for [{}] with measurement [{}]", r.getExpectedPcr().getIndex().toString(), r.getExpectedPcr().getValue().toHexString());
             }

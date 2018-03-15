@@ -839,6 +839,15 @@ public class MleBO {
              tblPcr.setUpdatedBy(getLoggedInUser());
              tblPcr.setUpdatedOn(new Date(System.currentTimeMillis()));
              */
+            
+            
+            //----------- Added by dav10re ------------------
+            //Only for debug
+            
+            log.debug("Updated TblPcrManifest: pcr {} bank {} value {}",pcrData.getPcrName(), pcrData.getPcrBank(), pcrData.getPcrDigest());
+            
+            //-----------------------------------------------
+            
             if (em == null) {
                 pcrManifestJpaController.edit(tblPcr);
             } else {

@@ -54,6 +54,16 @@ public class PcrMatchesConstant extends BaseRule {
                 report.fault(new PcrValueMissing(expected.getIndex()));
             }
             else {
+                
+                //--------------- Added by dav10re -------------
+                
+                //Only for debug to see the comparison
+                
+                log.debug("About to compare actual PCR [{}] value [{}] with expected value [{}]. Bank: {}", actual.getIndex().toString(), actual.getValue().toString(), expected.getValue().toString(), expected.getPcrBank().toString());
+
+                
+                //----------------------------------------------
+                
                 if( !expected.equals(actual) ) {
                     report.fault(PcrValueMismatch.newInstance(expected.getPcrBank(), expected.getIndex(), expected.getValue(), actual.getValue()) );
                 }
