@@ -19,6 +19,14 @@ import com.intel.mtwilson.policy.fault.PcrManifestMissing;
 import com.intel.mtwilson.policy.fault.PcrValueMismatch;
 import com.intel.mtwilson.policy.fault.PcrValueMissing;
 
+//------ Added by dav10re ---------
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+//---------------------------------
+
+
 /**
  * The PcrMatchesConstant policy enforces that a specific PCR contains a specific 
  * pre-determined constant value. This is typical for values that are known in 
@@ -32,6 +40,8 @@ import com.intel.mtwilson.policy.fault.PcrValueMissing;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PcrMatchesConstant extends BaseRule {
     private final Pcr expected;
+    private Logger log = LoggerFactory.getLogger(getClass());
+    
     
     @JsonCreator
     public PcrMatchesConstant(@JsonProperty("expected_pcr") Pcr expected) {
