@@ -63,7 +63,19 @@ public class V2TrustAgentClientTest {
         TpmQuoteRequest tpmQuoteRequest = new TpmQuoteRequest();
         tpmQuoteRequest.setNonce(RandomUtil.randomByteArray(20));
         tpmQuoteRequest.setPcrs(new int[] { 0, 17, 18, 19 });
-        TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs());
+        
+        //----------- Added by dav10re ------------
+        
+        tpmQuoteRequest.setIMA(true);
+        
+        //TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs());
+        
+        TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs(), tpmQuoteRequest.isIMA());
+        
+        //-----------------------------------------
+        
+        
+        
         ObjectMapper mapper = new ObjectMapper();
 //        mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy());
         log.debug(mapper.writeValueAsString(tpmQuoteResponse));
@@ -78,7 +90,18 @@ public class V2TrustAgentClientTest {
                 TpmQuoteRequest tpmQuoteRequest = new TpmQuoteRequest();
                 tpmQuoteRequest.setNonce(RandomUtil.randomByteArray(20));
                 tpmQuoteRequest.setPcrs(new int[] { 0, 17, 18, 19 });
-                TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs());
+                
+                //--------------- Added by dav10re -------------
+                
+                tpmQuoteRequest.setIMA(true);
+                
+                //TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs());
+                
+                TpmQuoteResponse tpmQuoteResponse = client.getTpmQuote(tpmQuoteRequest.getNonce(), tpmQuoteRequest.getPcrs(), tpmQuoteRequest.isIMA());
+                
+                //----------------------------------------------
+                
+                
                 ObjectMapper mapper = new ObjectMapper();
                 log.debug("quote response for nonce {} is {}", Base64.encodeBase64String(tpmQuoteRequest.getNonce()), mapper.writeValueAsString(tpmQuoteResponse));
             }
