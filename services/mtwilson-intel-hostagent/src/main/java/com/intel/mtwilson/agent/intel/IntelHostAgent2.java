@@ -187,7 +187,9 @@ public class IntelHostAgent2 implements HostAgent {
             
             //---------------- Added by dav10re -----------------
             // If pcr 10 is present then IMA attestation is required
-             
+            
+            log.debug("Pcrs List: {}", pcrList);
+            
             if(pcrList.indexOf("10") != -1)
                 helper.setIMA(true);
             
