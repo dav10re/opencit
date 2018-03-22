@@ -11,3 +11,15 @@ CREATE  TABLE mw_measurement_xml (
   );
     
 INSERT INTO mw_changelog (ID, APPLIED_AT, DESCRIPTION) VALUES (20150305150000, NOW(), 'Patch for creating the table for storing the measurement xml whitelist.');
+
+-- Added by dav10re
+
+CREATE  TABLE mw_ima_measurement_xml (
+id CHAR(36) NOT NULL,
+mleId INTEGER NOT NULL ,
+content TEXT DEFAULT NULL ,
+PRIMARY KEY (id),
+CONSTRAINT measurement_xml_mleId FOREIGN KEY (mleId) REFERENCES mw_mle (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+INSERT INTO mw_changelog (ID, APPLIED_AT, DESCRIPTION) VALUES (20150305150000, NOW(), 'Patch for creating the table for storing the ima measurement xml whitelist.');

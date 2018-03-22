@@ -51,6 +51,13 @@ public class PcrManifest extends ObjectModel {
     private final PcrEventLogSha1[] pcrEventLogsSha1 = new PcrEventLogSha1[24];
     private final PcrEventLogSha256[] pcrEventLogsSha256 = new PcrEventLogSha256[24];
     private String measurementXml;
+    
+    //------------ Added by dav10re ---------------------
+    
+    private String imaMeasurementXml;  //Added to contain ima measurements
+    
+    //---------------------------------------------------
+    
     private byte[] ProvisionedTag; //this is additional field added to support the new way of assetag attestation -- Haidong
 
     public byte[] getProvisionedTag() {
@@ -65,6 +72,12 @@ public class PcrManifest extends ObjectModel {
     public PcrManifest() {
         this.measurementXml = "";
         this.ProvisionedTag = null;
+        
+        //------------ Added by dav10re ---------------------
+        
+        this.imaMeasurementXml = "";
+        
+        //---------------------------------------------------
     }
     
     public void setPcr(DigestAlgorithm bank, Pcr pcr) {
@@ -411,6 +424,18 @@ public class PcrManifest extends ObjectModel {
     public void setMeasurementXml(String measurementXml) {
         this.measurementXml = measurementXml;
     }
+    
+    //------------------ Added by dav10re -----------
+    
+    public String getImaMeasurementXml() {
+        return imaMeasurementXml;
+    }
+    
+    public void setImaMeasurementXml(String imaMeasurementXml) {
+        this.imaMeasurementXml = imaMeasurementXml;
+    }
+    
+    //-----------------------------------------------
 
     private PcrEventLog[] getEventLogBank(DigestAlgorithm bank) {
         switch(bank) {

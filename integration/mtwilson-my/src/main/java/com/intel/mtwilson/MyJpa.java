@@ -211,6 +211,16 @@ public class MyJpa {
         return new MwMeasurementXmlJpaController(pm.getASData());
     }
     
+    //----------------- Added by dav10re ----------------
+    
+    public MwImaMeasurementXmlJpaController mwImaMeasurementXml() throws IOException {
+        return new MwImaMeasurementXmlJpaController(pm.getASData());
+    }
+    
+    
+    //---------------------------------------------------
+    
+    
     public MwVmAttestationReportJpaController mwVmAttestationReport() throws IOException {
         return new MwVmAttestationReportJpaController(pm.getASData());
     }

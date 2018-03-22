@@ -75,6 +75,14 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.util.StringUtils;
 
+//------------- Added by dav10re ---------------
+
+import com.intel.mtwilson.model.PcrManifest;
+import com.intel.mtwilson.as.controller.MwImaMeasurementXmlJpaController;
+import com.intel.mtwilson.as.data.MwImaMeasurementXml;
+
+//----------------------------------------------
+
 /**
  *
  * @author ssbangal
@@ -105,6 +113,12 @@ public class HostBO {
         private boolean isError = false;
         private String errorMessage = "";
         private String measurementXmlLog;
+        
+        //------------ Added by dav10re -------
+        
+        private String imaMeasurementXmlLog;
+        //-------------------------------------
+        
         private Nonce challenge;
 
         public HostAttReport(HostAgent agent, String requiredPCRs) {
@@ -128,7 +142,20 @@ public class HostBO {
                 long threadStart = System.currentTimeMillis();
                 // TODO: the below two calls can be optimized heavily, probably to speed up both, or combine them.
                 attestationReport = agent.getHostAttestationReport(requiredPCRs, challenge);
-                measurementXmlLog = agent.getPcrManifest(challenge).getMeasurementXml();
+                
+                //----------------- Added by dav10re ---------------
+                
+                PcrManifest pcrManifestFromResponse = agent.getPcrManifest(challenge);
+                measurementXmlLog = pcrManifestFromResponse.getMeasurementXml();
+                
+                //Getting ima measurements
+                imaMeasurementXmlLog = pcrManifestFromResponse.getImaMeasurementXml();
+                
+                //measurementXmlLog = agent.getPcrManifest(challenge).getMeasurementXml();
+
+                
+                //--------------------------------------------------
+                
                 log.debug("TIMETAKEN: by the attestation report thread: {}", (System.currentTimeMillis() - threadStart));
             } catch (Throwable te) {
                 isError = true;
@@ -151,6 +178,17 @@ public class HostBO {
             return measurementXmlLog;
         }
 
+        //------------- Added by dav10re --------------
+        
+        public String getImaMeasurementXmlLog(){
+            
+            return imaMeasurementXmlLog;
+            
+        }
+        
+        //---------------------------------------------
+        
+        
         public String getErrorMessage() {
             return errorMessage;
         }
@@ -949,6 +987,21 @@ public class HostBO {
                         configureMeasurementXmlLog(hostConfigObj, measurementXmlLog);
                         log.debug("ConfigureWhiteListFromCustomData: Found the following measurement xml log on the host. {}");
                     }
+                    
+                    //-------------------- Added by dav10re ----------------
+                    //Getting ima measurements from the HostAttReport object if there are
+                    
+                    String imaMeasurementXmlLog = hostAttReportObj.getImaMeasurementXmlLog();
+                    if (imaMeasurementXmlLog == null || imaMeasurementXmlLog.isEmpty()) {
+                        log.info("ConfigureWhiteListFromCustomData: No ima measurement xml log found on the host.");
+                    } else {
+                        configureImaMeasurementXmlLog(hostConfigObj, measurementXmlLog);
+                        log.debug("ConfigureWhiteListFromCustomData: Found the following ima measurement xml log on the host. {}");
+                    }
+                    
+                    //------------------------------------------------------
+                    
+                    
                 }
                 // Register host only if required.
                 /*if (hostConfigObj.isRegisterHost() == true) {
@@ -1418,6 +1471,54 @@ public class HostBO {
         }
     }
 
+    
+    
+    //------------ Added by dav10re -------------------
+    //Using this method to store the ima measurements in the DB
+    
+    private void configureImaMeasurementXmlLog(HostConfigData hostConfigObj, String imaMeasurementXmlLog) {
+        try {
+            if (imaMeasurementXmlLog != null && !imaMeasurementXmlLog.isEmpty()) {
+                MwImaMeasurementXmlJpaController mxJpa = My.jpa().mwImaMeasurementXml();
+                TblMleJpaController mleJpa = My.jpa().mwMle();
+                
+                TxtHostRecord hostObj = hostConfigObj.getTxtHostRecord();
+                
+                TblMle tblMleObj = mleJpa.findVmmMle(hostObj.VMM_Name, hostObj.VMM_Version, hostObj.VMM_OSName, hostObj.VMM_OSVersion);
+                if (tblMleObj == null) {
+                    log.error("Cannot find the MLE with name {} and version {} for updating the ima measurement xml log.", hostObj.VMM_Name, hostObj.VMM_Version);
+                    throw new MSException(ErrorCode.MS_VMM_MLE_NOT_FOUND);
+                }
+                
+                MwImaMeasurementXml imaMeasurementXml = mxJpa.findByMleId(tblMleObj.getId());
+                if (imaMeasurementXml == null) {
+                    imaMeasurementXml = new MwImaMeasurementXml();
+                    imaMeasurementXml.setId(new UUID().toString());
+                    imaMeasurementXml.setMleId(tblMleObj);
+                    imaMeasurementXml.setContent(imaMeasurementXmlLog);
+                    
+                    mxJpa.create(imaMeasurementXml);
+                    log.debug("Succesfully added the ima measurement xml log for Mle {}", tblMleObj.getName());
+                    
+                } else {
+                    imaMeasurementXml.setContent(measurementXmlLog);
+                    mxJpa.edit(imaMeasurementXml);
+                    log.debug("Succesfully updated the measurement xml log for Mle {}", tblMleObj.getName());
+                }
+            }
+        } catch (MSException me) {
+            log.error("Error during ima measurement xml log configuration. " + me.getErrorCode() + " :" + me.getErrorMessage());
+            throw me;
+        } catch (Exception ex) {
+            log.error("Error during ima measurement xml log configuration. ", ex);
+            throw new MSException(ErrorCode.MS_VMM_MLE_ERROR, ex.getClass().getSimpleName());
+        }
+    }
+
+    
+    
+    //-------------------------------------------------
+    
     /**
      *
      * @param apiClientObj

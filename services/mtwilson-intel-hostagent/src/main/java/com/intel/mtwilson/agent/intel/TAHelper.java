@@ -608,6 +608,16 @@ public class TAHelper {
         // Verify if there is TCBMeasurement Data. This data would be available if we are extending the root of trust to applications and data on the OS
         String tcbMeasurementString = tpmQuoteResponse.tcbMeasurement;
         log.debug("TCB Measurement XML is {}", tcbMeasurementString);
+                
+        //--------------- Added by dav10re -------------
+        /*Retrieving IMA measurements from the response even if IMA Attestation is not required
+        */
+                
+        String imaMeasurementString = tpmQuoteResponse.imaMeasurement;
+        log.debug("IMA Measurement XML is {}", imaMeasurementString);
+        
+        //----------------------------------------------
+                
 
         log.debug("Event log: {}", tpmQuoteResponse.eventLog); // issue #879
         byte[] eventLogBytes = Base64.decodeBase64(tpmQuoteResponse.eventLog);// issue #879
@@ -620,6 +630,14 @@ public class TAHelper {
             PcrManifest pcrManifest = verifyQuoteAndGetPcr(sessionId, decodedEventLog);
             if (tcbMeasurementString != null && !tcbMeasurementString.isEmpty())
                 pcrManifest.setMeasurementXml(tcbMeasurementString);
+            
+            //----------------- Added by dav10re -------------------
+            
+            if (imaMeasurementString != null && !imaMeasurementString.isEmpty())
+                pcrManifest.setImaMeasurementXml(tcbMeasurementString);
+            
+            //------------------------------------------------------
+            
             log.info("Got PCR map");
             //log.log(Level.INFO, "PCR map = "+pcrMap); // need to untaint this first
             if (deleteTemporaryFiles) {
