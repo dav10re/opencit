@@ -63,6 +63,31 @@
                         </configuration>
                         <id>mtwilson-measurement1-xml</id>
                     </execution>
+                    
+                    <!-- ----------Added by dav10re ---------------------   -->
+                    <!-- Creating generated classes for IMA   -->
+
+                    
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaIncludes>
+                                <include>jaxb/mtwilson-measurement-xml/IMA_Schema.xsd</include>
+                            </schemaIncludes>
+                            <bindingIncludes>
+                                <include>jaxb/mtwilson-measurement-xml/mtwilson-imameasurement-bindings.xjb</include>
+                            </bindingIncludes>
+                            <episodeFile>${project.build.directory}/generated-sources/xjc/META-INF/mtwilson-imameasurement-xml.episode</episodeFile>
+                            <generatePackage>com.intel.mtwilson.imameasurement.xml</generatePackage>
+                        </configuration>
+                        <id>mtwilson-imameasurement-xml</id>
+                    </execution>
+                    
+                    <!-- ----------------------------------------------------   -->
+
+                    
                 </executions>
                 <configuration>
                     <catalog>src/main/resources/jaxb/catalog.xml</catalog>

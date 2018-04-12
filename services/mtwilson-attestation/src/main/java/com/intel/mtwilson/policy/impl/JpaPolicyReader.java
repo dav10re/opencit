@@ -29,6 +29,19 @@ import com.intel.dcsg.cpg.crypto.Sha256Digest;
 import com.intel.dcsg.cpg.x509.X509Util;
 import com.intel.mtwilson.My;
 import com.intel.mtwilson.as.controller.MwMeasurementXmlJpaController;
+
+//------------- Added by dav10re -----------------
+
+import com.intel.mtwilson.as.controller.MwImaMeasurementXmlJpaController;
+import com.intel.mtwilson.as.data.MwImaMeasurementXml;
+import com.intel.mtwilson.model.XmlImaMeasurementLog;
+import com.intel.mtwilson.policy.rule.XmlImaMeasurementLogEquals;
+import com.intel.mtwilson.policy.rule.XmlImaMeasurementLogIntegrity;
+
+//------------------------------------------------
+
+
+
 import com.intel.mtwilson.as.data.MwMeasurementXml;
 import com.intel.mtwilson.model.MeasurementFactory;
 import com.intel.mtwilson.model.MeasurementSha1;
@@ -79,6 +92,13 @@ public class JpaPolicyReader {
     private TblModuleManifestJpaController moduleManifestJpaController;
     private TblLocationPcrJpaController locationPcrJpaController;
     private MwMeasurementXmlJpaController measurementXmlJpaController;
+    
+    //--------------- Added by dav10re ----------------
+    //For IMA
+    
+    private MwImaMeasurementXmlJpaController imaMeasurementXmlJpaController;
+
+    //-------------------------------------------------
 
     public JpaPolicyReader(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -88,6 +108,7 @@ public class JpaPolicyReader {
         locationPcrJpaController = new TblLocationPcrJpaController(entityManagerFactory);
         pcrHostSpecificManifestJpaController = new TblHostSpecificManifestJpaController(entityManagerFactory);
         measurementXmlJpaController = new MwMeasurementXmlJpaController(entityManagerFactory);
+        imaMeasurementXmlJpaController = new MwImaMeasurementXmlJpaController(entityManagerFactory);
     }
     
     
@@ -505,5 +526,45 @@ public class JpaPolicyReader {
         
         return list;
     }
+    
+    
+    //--------------------------- Added by dav10re -----------------------
+    
+    public Set<Rule> loadXmlImaMeasurementLogRuleForVmm(Vmm vmm, TblHosts tblHosts) {
+        
+        log.debug("loadXmlImaMeasurementLogRuleForVmm: Adding XmlImaMeasurementLogRules for verification");
+        HashSet<Rule> list = new HashSet<>();
+        
+        
+        // set pcrIndex equal to 10
+        PcrIndex pcrIndex = PcrIndex.PCR10;
+        
+        //Get all ima measurements from DB
+        MwImaMeasurementXml xmlImaMeasurement = imaMeasurementXmlJpaController.findByMleId(vmmMle.getId());
+        
+        // Ensure we have the measurement log itself is whitelisted before adding the
+        // rules for verification
+        if (xmlImaMeasurement != null && !xmlImaMeasurement.getContent().isEmpty()) {
+            
+            XmlImaMeasurementLog xmlImaMeasurementLog = new XmlImaMeasurementLog(pcrIndex, xmlImaMeasurement.getContent());
+            
+            // We should verify the integrity of the measurement log by calculating the final hash and
+            // comparing it to the value of PCR 10 in the quote.
+            XmlImaMeasurementLogIntegrity xmlImaMeasurementLogIntegrityRule = new XmlImaMeasurementLogIntegrity(null, pcrIndex);
+            xmlImaMeasurementLogIntegrityRule.setMarkers(TrustMarker.VMM.name());
+            list.add(xmlImaMeasurementLogIntegrityRule);
+            
+            //Add the measurement log verification rule
+            XmlImaMeasurementLogEquals xmlImaMeasurementLogEqualsRule = new XmlImaMeasurementLogEquals(xmlImaMeasurementLog);
+            xmlImaMeasurementLogEqualsRule.setMarkers(TrustMarker.VMM.name());
+            list.add(xmlImaMeasurementLogEqualsRule);
+            
+        }
+        
+        return list;
+    }
+    
+    
+    //---------------------------------------------------------------------
     
 }

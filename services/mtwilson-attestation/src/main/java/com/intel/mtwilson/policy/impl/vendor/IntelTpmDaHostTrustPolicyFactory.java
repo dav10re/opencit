@@ -121,6 +121,20 @@ public class IntelTpmDaHostTrustPolicyFactory extends IntelHostTrustPolicyFactor
             rules.addAll(xmlMeasurementLogRules);
         }
         
+        
+        //------------ Added by dav10re -----------------
+        
+        if( host.getVmmMleId().getRequiredManifestList().contains("10") ) {
+            
+            // Add rules to verify the ima meaurement log
+            
+            Set<Rule> xmlImaMeasurementLogRules = reader.loadXmlImaMeasurementLogRuleForVmm(vmm, host);
+            rules.addAll(xmlImaMeasurementLogRules);
+        }
+        
+        
+        //-----------------------------------------------
+        
         return rules;
     }
     
