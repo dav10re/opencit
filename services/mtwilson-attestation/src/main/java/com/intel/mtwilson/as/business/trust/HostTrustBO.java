@@ -60,6 +60,11 @@ import com.intel.mtwilson.policy.fault.XmlMeasurementLogContainsUnexpectedEntrie
 import com.intel.mtwilson.policy.fault.XmlMeasurementLogMissingExpectedEntries;
 import com.intel.mtwilson.policy.fault.XmlMeasurementLogValueMismatchEntries;
 import com.intel.mtwilson.policy.rule.XmlMeasurementLogEquals;
+
+//--------------- Added by dav10re ---------------
+import com.intel.mtwilson.policy.rule.XmlImaMeasurementLogEquals;
+//------------------------------------------------
+
 import com.intel.mtwilson.policy.rule.XmlMeasurementLogIntegrity;
 import com.intel.mtwilson.saml.IssuerConfiguration;
 import com.intel.mtwilson.saml.SamlConfiguration;
@@ -1464,11 +1469,36 @@ public class HostTrustBO {
                 }
 
                 // Now process the XmlMeasurementLogEquals rule
-                if( rule instanceof XmlMeasurementLogEquals ) { 
-                    log.debug("Processing the XmlMeasurementLogEquals rule");
+                
+                //---------------- Added by dav10re ------------------
+                //if( rule instanceof XmlMeasurementLogEquals ) {      //original
+                if( rule instanceof XmlMeasurementLogEquals || rule instanceof XmlImaMeasurementLogEquals) {
+                
+                
+                    
+                    //log.debug("Processing the XmlMeasurementLogEquals rule");   //original
 
+                    //TblTaLog pcr = null;   //original
+                    //String pcrIndex = ((XmlMeasurementLogEquals)rule).getPcrIndex().toString();   //original
+                    String pcrIndex = null;
                     TblTaLog pcr = null;
-                    String pcrIndex = ((XmlMeasurementLogEquals)rule).getPcrIndex().toString();
+                    if(rule instanceof XmlImaMeasurementLogEquals){
+                        
+                        log.debug("Processing the XmlImaMeasurementLogEquals rule");
+                        pcrIndex = ((XmlImaMeasurementLogEquals)rule).getPcrIndex().toString();
+                        
+                        
+                    }else{
+                        
+                        log.debug("Processing the XmlMeasurementLogEquals rule");
+                        pcrIndex = ((XmlMeasurementLogEquals)rule).getPcrIndex().toString();
+                        
+                        
+                    }
+                    
+                    
+                //----------------------------------------------------
+                    
                     TblTaLog biosPcr = taLogMap.get(pcrIndex + "-BIOS");
                     TblTaLog vmmPcr = taLogMap.get(pcrIndex + "-VMM");
                     String type = "";
@@ -1524,7 +1554,15 @@ public class HostTrustBO {
                                     if( report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getMeasurementXml() == null ) {
                                         throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
                                     }
+                                    
+                                    //----------- Added by dav10re -------------
+                                    
+                                    if( rule instanceof XmlImaMeasurementLogEquals &&  (report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getImaMeasurementXml() == null) ) {
+                                        throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
+                                    }
 
+                                    //------------------------------------------
+                                    
                                     TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
                                     if (findByTaLogIdAndName == null) {
                                         TblModuleManifestLog event = new TblModuleManifestLog();
@@ -1572,8 +1610,42 @@ public class HostTrustBO {
                                     if( report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getMeasurementXml() == null ) {
                                         throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
                                     }
-
-                                    TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                    
+                                    //----------- Added by dav10re -------------
+                                    
+                                    if( rule instanceof XmlImaMeasurementLogEquals &&  (report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getImaMeasurementXml() == null) ) {
+                                        throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
+                                    }
+                                    
+                                    if( rule instanceof XmlMeasurementLogEquals){
+                                       
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("tbootxm-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(""); // Since the module is missing, there is no current value.
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        }
+                                        
+                                    }else{
+                                        
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("IMA-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(""); // Since the module is missing, there is no current value.
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        }
+                                        
+                                        
+                                    }
+                                    
+                                    //original
+                                    /*TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
                                     if (findByTaLogIdAndName == null) {
                                         TblModuleManifestLog event = new TblModuleManifestLog();
                                         event.setName("tbootxm-" + m.getLabel());
@@ -1581,7 +1653,10 @@ public class HostTrustBO {
                                         event.setValue(""); // Since the module is missing, there is no current value.
                                         event.setWhitelistValue(m.getValue().toString());
                                         moduleLogJpa.create(event);
-                                    } 
+                                    }*/
+                                    
+                                    //------------------------------------------
+                                    
                                 }
                             }
                         }
@@ -1620,8 +1695,41 @@ public class HostTrustBO {
                                     if( report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getMeasurementXml() == null ) {
                                         throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
                                     }
-
-                                    TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                    
+                                    //----------- Added by dav10re -------------
+                                    
+                                    if( rule instanceof XmlImaMeasurementLogEquals &&  (report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getImaMeasurementXml() == null) ) {
+                                        throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
+                                    }
+                                    
+                                    if( rule instanceof XmlMeasurementLogEquals){
+                                        
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("tbootxm-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(""); // Since the module is missing, there is no current value.
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        }
+                                        
+                                    }else{
+                                        
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("IMA-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(""); // Since the module is missing, there is no current value.
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        }
+                                        
+                                        
+                                    }
+                                    //original
+                                    /*TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
                                     if (findByTaLogIdAndName == null) {
                                         TblModuleManifestLog event = new TblModuleManifestLog();
                                         event.setName("tbootxm-" + m.getLabel());
@@ -1629,7 +1737,9 @@ public class HostTrustBO {
                                         event.setValue(m.getValue().toString()); 
                                         event.setWhitelistValue(""); // Since this is an unexpected module, there will not be any whitelist associated.
                                         moduleLogJpa.create(event);
-                                    } 
+                                    } */
+                                    
+                                    //-------------------------------------------
                                 }
                             }
                         }          

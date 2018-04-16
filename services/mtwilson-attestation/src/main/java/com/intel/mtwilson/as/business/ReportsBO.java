@@ -30,6 +30,13 @@ import com.intel.mtwilson.model.Measurement;
 import com.intel.mtwilson.model.Nonce;
 import com.intel.mtwilson.model.PcrIndex;
 import com.intel.mtwilson.model.XmlMeasurementLog;
+
+//-------------------- Added by dav10re --------------
+
+import com.intel.mtwilson.model.XmlImaMeasurementLog;
+import com.intel.mtwilson.as.data.MwImaMeasurementXml;
+//----------------------------------------------------
+
 import java.util.*;
 import java.io.IOException;
 
@@ -406,6 +413,31 @@ public class ReportsBO {
         
         if(!failureOnly){
             logger.debug("FailureOnly flag is false. Adding all manifests.");
+            
+            //------------------- Added by dav10re ---------------
+            //Adding ModuleLogReport, one for each ima measurements. Each ModuleLogRepoort
+            //will be shown in the report under PCR 10 label
+            
+            if(log.getManifestName().equalsIgnoreCase("10")){
+                
+                MwImaMeasurementXml findByMleId = My.jpa().mwImaMeasurementXml().findByMleId(tblPcrManifest.getMleId().getId());
+                List<Measurement> measurements = new XmlImaMeasurementLog(PcrIndex.valueOf(tblPcrManifest.getName()), findByMleId.getContent()).getMeasurements();
+                for(Measurement m : measurements) {
+                    logger.debug("addManifestLogs - Adding the IMA module {} ", m.getLabel());
+                    ModuleLogReport moduleLogReport;
+                    if (m.getValue() == null || m.getValue().toString() == null) {
+                        moduleLogReport = new ModuleLogReport(m.getLabel(), "", "",1);
+                    } else {
+                        moduleLogReport = new ModuleLogReport(m.getLabel(), m.getValue().toString(), m.getValue().toString(),1);
+                    }
+                    if (!moduleReports.containsKey(moduleLogReport.getComponentName()))
+                        moduleReports.put(moduleLogReport.getComponentName(), moduleLogReport);
+                }
+                
+            }
+            
+            //----------------------------------------------------
+            
             for(TblModuleManifest moduleManifest : tblPcrManifest.getMleId().getTblModuleManifestCollection()){
                 logger.debug("addManifestLogs - {} - {}", moduleManifest.getComponentName(), moduleManifest.getDigestValue());
 

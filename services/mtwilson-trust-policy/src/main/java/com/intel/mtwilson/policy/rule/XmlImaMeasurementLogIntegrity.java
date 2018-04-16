@@ -37,9 +37,9 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     private String expectedValue;
     private PcrIndex pcrIndex;
     
-    protected XmlMeasurementLogIntegrity() { } // for desearializing jackson
+    protected XmlImaMeasurementLogIntegrity() { } // for desearializing jackson
     
-    public XmlMeasurementLogIntegrity(String expectedValue, PcrIndex pcrIndex) {
+    public XmlImaMeasurementLogIntegrity(String expectedValue, PcrIndex pcrIndex) {
         this.expectedValue = expectedValue;
         this.pcrIndex = pcrIndex;
     }
@@ -64,7 +64,7 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     public RuleResult apply(HostReport hostReport) {
         
         setExpectedValue(hostReport);
-        log.debug("XmlMeasurementLogIntegrity: setting the expected value got from the quote: {}",expectedValue);
+        log.debug("XmlImaMeasurementLogIntegrity: setting the expected value got from the quote: {}",expectedValue);
 
         
         log.debug("XmlImaMeasurementLogIntegrity: About to apply the XmlImaMeasurementLogIntegrity policy");
