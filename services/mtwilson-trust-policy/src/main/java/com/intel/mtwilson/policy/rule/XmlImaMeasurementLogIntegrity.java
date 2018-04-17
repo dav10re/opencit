@@ -51,7 +51,7 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
         DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
         
         //Get the PCR 10 from the quote
-        this.expectedValue = hostReport.getPcrManifest().getPcrs(digestAl).get(10).getValue().toString();
+        this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
         
     }
 
