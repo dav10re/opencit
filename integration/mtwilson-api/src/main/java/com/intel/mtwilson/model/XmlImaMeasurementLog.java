@@ -36,12 +36,12 @@ public class XmlImaMeasurementLog extends ObjectModel {
     private final PcrIndex pcrIndex;
     private final List<Measurement> measurements = new ArrayList<>();
 
-    public XmlMeasurementLog(PcrIndex pcrIndex) {
+    public XmlImaMeasurementLog(PcrIndex pcrIndex) {
         this.pcrIndex = pcrIndex;
     }
     
     @JsonCreator
-    public XmlMeasurementLog(@JsonProperty("pcr_index") PcrIndex pcrIndex, @JsonProperty("xml_ima_measurement_log") String xmlImaMeasurementLog) {
+    public XmlImaMeasurementLog(@JsonProperty("pcr_index") PcrIndex pcrIndex, @JsonProperty("xml_ima_measurement_log") String xmlImaMeasurementLog) {
         log.debug("XmlImaMeasurementLog Constructor: About to parse {} for PCR {}", xmlImaMeasurementLog, pcrIndex.toString());
         this.pcrIndex = pcrIndex;
         parseXmlImaMeasurementLog(xmlImaMeasurementLog);
@@ -75,7 +75,7 @@ public class XmlImaMeasurementLog extends ObjectModel {
                 }
                 
             } catch (    IOException | JAXBException | XMLStreamException ex) {
-                Logger.getLogger(XmlMeasurementLog.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(XmlImaMeasurementLog.class.getName()).log(Level.SEVERE, null, ex);
             }
         }        
     }
