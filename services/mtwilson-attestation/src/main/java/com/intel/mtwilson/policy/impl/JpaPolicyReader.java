@@ -539,6 +539,9 @@ public class JpaPolicyReader {
         // set pcrIndex equal to 10
         PcrIndex pcrIndex = PcrIndex.PCR10;
         
+        //Find the vmm whitelist
+        TblMle vmmMle = mleJpaController.findVmmMle(vmm.getName(), vmm.getVersion(), vmm.getOsName(), vmm.getOsVersion());
+        
         //Get all ima measurements from DB
         MwImaMeasurementXml xmlImaMeasurement = imaMeasurementXmlJpaController.findByMleId(vmmMle.getId());
         
