@@ -54,7 +54,7 @@ public class XmlImaMeasurementLog extends ObjectModel {
         if (xmlImaMeasurements != null && !xmlImaMeasurements.isEmpty()) {
             try {
                 IMAMeasurements imameasurements = measurementLogJaxb.read(xmlImaMeasurements, IMAMeasurements.class);
-                if (imameasurements.getImameasurements.size() > 0) {
+                if (imameasurements.getImameasurements().size() > 0) {
                     for (MeasurementType measurementLogEntry : measurements.getMeasurements()) {
                         if (measurementLogEntry.getClass().equals(FileMeasurementType.class)) {
                             FileMeasurementType fileEntry = (FileMeasurementType) measurementLogEntry;
