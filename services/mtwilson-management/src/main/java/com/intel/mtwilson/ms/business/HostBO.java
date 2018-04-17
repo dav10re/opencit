@@ -1501,7 +1501,7 @@ public class HostBO {
                     log.debug("Succesfully added the ima measurement xml log for Mle {}", tblMleObj.getName());
                     
                 } else {
-                    imaMeasurementXml.setContent(measurementXmlLog);
+                    imaMeasurementXml.setContent(imaMeasurementXmlLog);
                     mxJpa.edit(imaMeasurementXml);
                     log.debug("Succesfully updated the measurement xml log for Mle {}", tblMleObj.getName());
                 }
