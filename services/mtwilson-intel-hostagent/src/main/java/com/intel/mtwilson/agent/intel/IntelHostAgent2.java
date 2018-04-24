@@ -147,7 +147,32 @@ public class IntelHostAgent2 implements HostAgent {
         }
         return pcrManifest;
     }
+    
+    
+    //-------------- Added by dav10re ---------------
 
+    //These methods have called for attestation with IMA
+    
+    public PcrManifest getPcrManifest(boolean ima) throws IOException {
+        return getPcrManifest(null,ima);
+    }
+    
+    public PcrManifest getPcrManifest(Nonce challenge, boolean ima) throws IOException {
+        if( pcrManifest == null ) {
+            try {
+                TAHelper helper = new TAHelper(getHostDetails());
+                helper.setIMA(ima)
+                pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), client, challenge);
+            }
+            catch(Exception e) {
+                throw new IOException("Cannot retrieve PCR Manifest from "+hostAddress.toString(), e);
+            }
+        }
+        return pcrManifest;
+    }
+    
+    //-----------------------------------------------
+    
     @Override
     public TxtHostRecord getHostDetails() throws IOException {
         HostInfo hostInfo = client.getHostInfo();

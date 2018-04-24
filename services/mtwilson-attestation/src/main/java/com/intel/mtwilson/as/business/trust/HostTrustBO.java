@@ -174,6 +174,8 @@ public class HostTrustBO {
         
         try {
             
+            log.debug("HostConfigData VMMPcrs: {}", hostConfigObj.getVmmPCRs());
+            
             long getTrustStatusOfHostNotInDBStart = System.currentTimeMillis();
             
             log.debug("getTrustStatusOfHostNotInDB: Starting to find the matching MLEs for host {}.", hostObj.HostName);
@@ -221,7 +223,31 @@ public class HostTrustBO {
             tblHosts.setAddOnConnectionInfo(factory.getHostConnectionString());
             
             PcrManifest pcrManifest;
+            
+            //--------------- Added by dav10re --------------
+            boolean ima = false;
+            
+            //See if ima attestation is required
+            if(hostConfigObj.getVmmPCRs().indexOf("10") != -1)
+                ima = true;
+            
             if( hostConfigObj.getChallengeHex() == null || hostConfigObj.getChallengeHex().isEmpty() ){
+                pcrManifest = agent.getPcrManifest(ima);
+            }
+            else {
+                if( Digest.sha1().isValidHex(hostConfigObj.getChallengeHex()) ) {
+                    Nonce challenge = new Nonce(Digest.sha1().valueHex(hostConfigObj.getChallengeHex()).getBytes());
+                    pcrManifest = agent.getPcrManifest(challenge, ima);
+                }
+                else {
+                    log.error("Cannot retrieve PCRs from host because of invalid challenge: {}", hostConfigObj.getChallengeHex());
+                    throw new ASException(ErrorCode.AS_INVALID_INPUT);
+                }
+            }
+            
+            
+            //Original statements
+            /*if( hostConfigObj.getChallengeHex() == null || hostConfigObj.getChallengeHex().isEmpty() ){
                 pcrManifest = agent.getPcrManifest();
             }
             else {
@@ -233,7 +259,9 @@ public class HostTrustBO {
                     log.error("Cannot retrieve PCRs from host because of invalid challenge: {}", hostConfigObj.getChallengeHex());
                     throw new ASException(ErrorCode.AS_INVALID_INPUT);
                 }
-            }
+            }*/
+            
+            //------------------------------------------------
             
             if( pcrManifest == null ) {
                 throw new ASException(ErrorCode.AS_HOST_MANIFEST_MISSING_PCRS);
@@ -799,12 +827,31 @@ public class HostTrustBO {
         
         long getAgentManifestStart = System.currentTimeMillis(); 
         PcrManifest pcrManifest;
+        
+        //----------- Added by dav10re -----------
+        
+        boolean ima = false;
+        
+        //See if PCR 10 is present in the VMM Mle. This means that during registration ima attestation has been required
+        if(tblHosts.getVmmMleId().getRequiredManifestList().indexOf("10") != -1)
+            ima = true;
+        
         if( challenge == null ) {
+            pcrManifest = agent.getPcrManifest(ima);
+        }
+        else {
+            pcrManifest = agent.getPcrManifest(challenge, ima); // issue #4978 use specified nonce if available
+        }
+        
+        //original statements
+        /*if( challenge == null ) {
             pcrManifest = agent.getPcrManifest();
         }
         else {
             pcrManifest = agent.getPcrManifest(challenge); // issue #4978 use specified nonce if available
-        }
+        }*/
+        //---------------------------------------
+        
         long getAgentManifestStop = System.currentTimeMillis();
         log.trace("performance: getPcrManifest: {}ms", getAgentManifestStop-getAgentManifestStart);
         
