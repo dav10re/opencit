@@ -269,6 +269,17 @@ public class MleBO {
                 mxJpa.destroy(measurementXml.getId());
             }
             
+            //------- Added by dav10re -----------
+            //Delete the entries in the mw_ima_measurement_xml table
+            
+            MwImaMeasurementXmlJpaController mxImaJpa = My.jpa().mwImaMeasurementXml();
+            MwImaMeasurementXml imaMeasurementXml = mxImaJpa.findByMleId(tblMle.getId());
+            if (imaMeasurementXml != null) {
+                mxImaJpa.destroy(imaMeasurementXml.getId());
+            }
+            //-----------------------------------
+            
+            
             // We also need to delete entries in the MleSource table for the MLE. This table would store the host
             // name that was used to white list the MLE.
             deleteMleSource(mleName, mleVersion, osName, osVersion, oemName, mleUuid);
