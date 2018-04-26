@@ -58,8 +58,9 @@ public class VmwareAgentTest {
         PcrManifest manifest1 = agent1.getPcrManifest(false);
         //PcrManifest manifest1 = agent1.getPcrManifest(); //original
         
-        //----------------------------------------------        Pcr pcr1 = manifest1.getPcr(19);
+        //----------------------------------------------
         
+        Pcr pcr1 = manifest1.getPcr(19);
         PcrEventLog eventLog1 = manifest1.getPcrEventLog(19);
         List<Measurement> list1 = eventLog1.getEventLog();
         log.debug("pcr 19 = {}", pcr1.toString());
