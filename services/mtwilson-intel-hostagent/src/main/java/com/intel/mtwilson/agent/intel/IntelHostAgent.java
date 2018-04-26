@@ -151,7 +151,7 @@ public class IntelHostAgent implements HostAgent {
             try {
                 TAHelper helper = new TAHelper();
                 helper.setIMA(ima);
-                pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), client, challenge);
+                pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), trustAgentClient, challenge);
             }
             catch(Exception e) {
                 throw new IOException("Cannot retrieve PCR Manifest from "+hostAddress.toString(), e);
