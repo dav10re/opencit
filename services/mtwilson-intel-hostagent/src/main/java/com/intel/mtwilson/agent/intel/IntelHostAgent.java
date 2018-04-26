@@ -150,7 +150,7 @@ public class IntelHostAgent implements HostAgent {
         if( pcrManifest == null ) {
             try {
                 TAHelper helper = new TAHelper();
-                helper.setIMA(ima)
+                helper.setIMA(ima);
                 pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), client, challenge);
             }
             catch(Exception e) {

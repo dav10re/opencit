@@ -169,7 +169,7 @@ public class IntelHostAgent2 implements HostAgent {
         if( pcrManifest == null ) {
             try {
                 TAHelper helper = new TAHelper(getHostDetails());
-                helper.setIMA(ima)
+                helper.setIMA(ima);
                 pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), client, challenge);
             }
             catch(Exception e) {
