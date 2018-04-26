@@ -999,7 +999,7 @@ public class HostBO {
                     if (imaMeasurementXmlLog == null || imaMeasurementXmlLog.isEmpty()) {
                         log.info("ConfigureWhiteListFromCustomData: No ima measurement xml log found on the host.");
                     } else {
-                        configureImaMeasurementXmlLog(hostConfigObj, measurementXmlLog);
+                        configureImaMeasurementXmlLog(hostConfigObj, imaMeasurementXmlLog);
                         log.debug("ConfigureWhiteListFromCustomData: Found the following ima measurement xml log on the host. {}");
                     }
                     
