@@ -117,7 +117,9 @@ public class IntelHostAgent implements HostAgent {
         throw new UnsupportedOperationException("Not supported  yet."); 
     }
 
-    @Override
+    //------------- Added by dav10re ----------------------
+    //Original methods
+    /*@Override
     public PcrManifest getPcrManifest() throws IOException {
         return getPcrManifest(null);
     }
@@ -134,7 +136,31 @@ public class IntelHostAgent implements HostAgent {
             }
         }
         return pcrManifest;
+    }*/
+    
+    //These methods have called for attestation with IMA
+    
+    @Override
+    public PcrManifest getPcrManifest(boolean ima) throws IOException {
+        return getPcrManifest(null,ima);
     }
+    
+    @Override
+    public PcrManifest getPcrManifest(Nonce challenge, boolean ima) throws IOException {
+        if( pcrManifest == null ) {
+            try {
+                TAHelper helper = new TAHelper();
+                helper.setIMA(ima)
+                pcrManifest = helper.getQuoteInformationForHost(hostAddress.toString(), client, challenge);
+            }
+            catch(Exception e) {
+                throw new IOException("Cannot retrieve PCR Manifest from "+hostAddress.toString(), e);
+            }
+        }
+        return pcrManifest;
+    }
+    
+    //-----------------------------------------------
 
     @Override
     public TxtHostRecord getHostDetails() throws IOException {

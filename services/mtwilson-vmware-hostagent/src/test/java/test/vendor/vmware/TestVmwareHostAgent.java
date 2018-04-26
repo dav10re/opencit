@@ -101,7 +101,14 @@ public class TestVmwareHostAgent {
          HostAgent hostAgent = factory.getHostAgent(conn, tlsPolicy);        
          */
         HostAgent agent = getAgent();
-        PcrManifest pcrManifest = agent.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         for (int i = 0; i < 24; i++) {
             PcrEventLog pcrEventLog = pcrManifest.getPcrEventLog(i);
             if (pcrEventLog == null) {
@@ -170,7 +177,14 @@ Pcr 0 = 891eb0b556b83fcef1c10f3fa6464345e34f8f91 Pcr 1 =
      */
     @Test
     public void getPcrManifestFromVmware() throws IOException {
-        PcrManifest pcrManifest = agent.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         assertNotNull(pcrManifest);
         for (int i = 0; i < 24; i++) {
             Pcr pcr = pcrManifest.getPcr(i);

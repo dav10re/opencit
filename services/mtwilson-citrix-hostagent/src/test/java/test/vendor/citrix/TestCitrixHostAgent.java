@@ -100,7 +100,14 @@ public class TestCitrixHostAgent {
      */
     @Test
     public void getPcrManifestFromCitrixXen() throws IOException {
-        PcrManifest pcrManifest = agent.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         assertNotNull(pcrManifest);
         
         for(int i=0; i<24; i++) {

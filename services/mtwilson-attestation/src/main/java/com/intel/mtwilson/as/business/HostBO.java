@@ -218,8 +218,15 @@ public class HostBO {
 
                         // retrieve the complete manifest for  the host, includes ALL pcr's and if there is module info available it is included also.
                         if (pcrManifest == null)
-                            pcrManifest = agent.getPcrManifest();  // currently Vmware has pcr+module, but in 1.2 we are adding module attestation for Intel hosts too ;   citrix would be just pcr for now i guess
-                        
+                            
+                            
+                            //--------------- Added by dav10re --------------
+                            
+                            pcrManifest = agent.getPcrManifest(false);
+                            //pcrManifest = agent.getPcrManifest();  // currently Vmware has pcr+module, but in 1.2 we are adding module attestation for Intel hosts too ;   citrix would be just pcr for now i guess
+                    
+                            //----------------------------------------------
+                
 
                         // send the pcr manifest to a vendor-specific class in order to extract any host-specific information
                         // for vmware this is the "HostTpmCommandLineEventDetails" which is a host-specific value and must be
@@ -540,7 +547,15 @@ public class HostBO {
                         log.debug("About to update the host specific manifest");
                         // retrieve the complete manifest for  the host, includes ALL pcr's and if there is module info available it is included also.
                         if (pcrManifest == null)
-                            pcrManifest = agent.getPcrManifest();  // currently Vmware has pcr+module, but in 1.2 we are adding module attestation for Intel hosts too ;   citrix would be just pcr for now i guess
+                            
+                            //--------------- Added by dav10re --------------
+                            
+                            pcrManifest = agent.getPcrManifest(false);
+                            //pcrManifest = agent.getPcrManifest();  // currently Vmware has pcr+module, but in 1.2 we are adding module attestation for Intel hosts too ;   citrix would be just pcr for now i guess //original
+                    
+                            //----------------------------------------------
+                    
+                    
 
                         // Bug 962: Earlier we were trying to delete the old host specific values after the host update. By then the VMM MLE would
                         // already be updated and the query would not find any values to delete.

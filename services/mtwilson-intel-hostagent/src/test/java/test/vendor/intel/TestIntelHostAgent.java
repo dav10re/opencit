@@ -166,7 +166,13 @@ Pcr 23 = 0000000000000000000000000000000000000000
     @Test
     public void getPcrManifestFromXen() throws IOException {
         X509Certificate aikCertificate = agent.getAikCertificate();
-        PcrManifest pcrManifest = agent.getPcrManifest();
+
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
         assertNotNull(pcrManifest);
         
         if (pcrManifest != null && pcrManifest.containsPcrEventLog(PcrIndex.PCR19)) {

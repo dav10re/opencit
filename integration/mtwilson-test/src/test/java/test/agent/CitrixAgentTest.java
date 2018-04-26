@@ -32,7 +32,14 @@ public class CitrixAgentTest {
         
         HostAgentFactory hostAgentFactory = new HostAgentFactory();
         HostAgent agent1 = hostAgentFactory.getHostAgent(new ConnectionString(host1), new InsecureTlsPolicy());
-        PcrManifest manifest1 = agent1.getPcrManifest();
+        
+        //----------------- Added by dav10re ---------
+        
+        //PcrManifest manifest1 = agent1.getPcrManifest(); //original
+        
+        PcrManifest manifest1 = agent1.getPcrManifest(false);
+        //--------------------------------------------
+        
         Pcr pcr1 = manifest1.getPcr(19);
         PcrEventLog eventLog1 = manifest1.getPcrEventLog(19);
         if( eventLog1 != null ) {
@@ -47,7 +54,14 @@ public class CitrixAgentTest {
         
         HostAgentFactory hostAgentFactory = new HostAgentFactory();
         HostAgent agent1 = hostAgentFactory.getHostAgent(new ConnectionString(host1), new InsecureTlsPolicy());
-        PcrManifest manifest1 = agent1.getPcrManifest();
+        
+        //----------------- Added by dav10re ---------
+        
+        //PcrManifest manifest1 = agent1.getPcrManifest(); //original
+        
+        PcrManifest manifest1 = agent1.getPcrManifest(false);
+        //--------------------------------------------
+        
         Pcr pcr1 = manifest1.getPcr(19);
         PcrEventLog eventLog1 = manifest1.getPcrEventLog(19);
         if( eventLog1 != null ) {

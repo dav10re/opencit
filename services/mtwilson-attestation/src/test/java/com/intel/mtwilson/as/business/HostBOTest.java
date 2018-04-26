@@ -341,7 +341,14 @@ public class HostBOTest {
         HostAgentFactory factory = new HostAgentFactory();
         HostAgent agent = factory.getHostAgent(tblHosts);
         HostBO hbo = ASComponentFactory.getHostBO();
-        PcrManifest pcrManifest = agent.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         HostResponse response = hbo.addHost(hostObj, pcrManifest, null, null); //.getTrustStatus(new Hostname(hostName));
         
         Resource resource = tblHosts.getTlsKeystoreResource();

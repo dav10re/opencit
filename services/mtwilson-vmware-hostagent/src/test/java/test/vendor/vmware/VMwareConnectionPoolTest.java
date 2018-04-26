@@ -108,7 +108,14 @@ public class VMwareConnectionPoolTest {
     public void testSaveTlsCertificateIntoKeystore() throws KeyManagementException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         ConnectionString connstr = new ConnectionString(host1);
         HostAgent agent =  getAgentWithEmptyKeystore();
-        PcrManifest pcrManifest = agent.getPcrManifest();
+
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         log.debug("Pcr manifest is valid? {}", pcrManifest.isValid());
         SimpleKeystore keystore = new SimpleKeystore(My.configuration().getKeystoreFile(), My.configuration().getKeystorePassword());
         List<X509Certificate> certs = repository.getCertificates();

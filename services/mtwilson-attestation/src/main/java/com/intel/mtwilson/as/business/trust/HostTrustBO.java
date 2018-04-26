@@ -206,7 +206,7 @@ public class HostTrustBO {
             }
             
             HostAgentFactory factory = new HostAgentFactory();
-            HostAgentForIma agent = factory.getHostAgent(tblHosts);
+            HostAgent agent = factory.getHostAgent(tblHosts);       
             
             TxtHostRecord detailsFromHost = agent.getHostDetails();
             if(detailsFromHost != null && detailsFromHost.TpmVersion != null) {
@@ -816,7 +816,7 @@ public class HostTrustBO {
         // bug #538 first check if the host supports tpm
         HostAgentFactory factory = new HostAgentFactory();
         long getAgentStart = System.currentTimeMillis(); 
-        HostAgentForIma agent = factory.getHostAgent(tblHosts);
+        HostAgent agent = factory.getHostAgent(tblHosts);
         long getAgentStop = System.currentTimeMillis();
         log.trace("performance: getHostAgent: {}ms", getAgentStop-getAgentStart);
         if( !agent.isTpmEnabled() || !agent.isIntelTxtEnabled() ) {
@@ -2517,7 +2517,13 @@ public class HostTrustBO {
                         // Now that all the basic validation is done, we can retrieve the attestation report from the host for verfiication against the DB. We were
                         // earlier retrieving the attestation report to start with. But for better performance, doing it after all the validations.
                         if (hostReport.pcrManifest == null) {
-                            PcrManifest pcrManifest = agent.getPcrManifest();
+
+                            //--------------- Added by dav10re --------------
+                            
+                            PcrManifest pcrManifest = agent.getPcrManifest(false);
+                            //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+                            
+                            //----------------------------------------------
                             if( pcrManifest == null ) {
                                 throw new ASException(ErrorCode.AS_HOST_MANIFEST_MISSING_PCRS);
                             }
@@ -2608,7 +2614,14 @@ public class HostTrustBO {
                         // Now that all the basic validation is done, we can retrieve the attestation report from the host for verfiication against the DB. We were
                         // earlier retrieving the attestation report to start with. But for better performance, doing it after all the validations.
                         if (hostReport.pcrManifest == null) {
-                            PcrManifest pcrManifest = agent.getPcrManifest();
+                            
+                            //--------------- Added by dav10re --------------
+                            
+                            PcrManifest pcrManifest = agent.getPcrManifest(false);
+                            //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+                            
+                            //----------------------------------------------
+                            
                             if( pcrManifest == null ) {
                                 throw new ASException(ErrorCode.AS_HOST_MANIFEST_MISSING_PCRS);
                             }

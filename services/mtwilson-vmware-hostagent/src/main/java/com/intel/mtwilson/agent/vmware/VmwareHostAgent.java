@@ -209,13 +209,23 @@ public class VmwareHostAgent implements HostAgent {
      }*/
     
     @Override
-    public PcrManifest getPcrManifest(Nonce challenge) throws IOException {
+    // ------------------ Added by dav10re ---------------------
+    //public PcrManifest getPcrManifest(Nonce challenge) throws IOException {   //original
+    public PcrManifest getPcrManifest(Nonce challenge, boolean ima) throws IOException {
+    //----------------------------------------------------------
         log.error("vmware does not provide TPM quotes; ignoring challenge nonce: {}", challenge);
-        return getPcrManifest();
+        
+    //----------------- Added by dav10re ---------------------------
+        //return getPcrManifest();    //original
+        return getPcrManifest(ima);
+    //-------------------------------------------------------------
     }
     
     @Override
-    public PcrManifest getPcrManifest() throws IOException {
+    // ------------------ Added by dav10re ---------------------
+    //public PcrManifest getPcrManifest() throws IOException {   //original
+    public PcrManifest getPcrManifest(boolean ima) throws IOException {
+    //----------------------------------------------------------
         try {
 //            if( isTpmPresent() ) { // issue #784 performance; no need to check if tpm is present, just try to get the report and if there's an error we can run diagnostics after
             // if (vCenterVersion.contains("5.1")) {

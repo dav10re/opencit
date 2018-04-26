@@ -189,9 +189,16 @@ public interface HostAgent {
      * @param host
      * @return 
      */
-    PcrManifest getPcrManifest() throws IOException;
+    
+    //----------- Added by dav10re --------------
+    
+    //PcrManifest getPcrManifest() throws IOException;  //original
 
-    PcrManifest getPcrManifest(Nonce challenge) throws IOException;
+    //PcrManifest getPcrManifest(Nonce challenge) throws IOException;  //original
+    
+    PcrManifest getPcrManifest(boolean ima) throws IOException;
+    PcrManifest getPcrManifest(Nonce challenge, boolean ima) throws IOException;
+    //-------------------------------------------
     
     /**
      * SAMPLE OUTPUT FROM VMWare Host:

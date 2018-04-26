@@ -102,7 +102,11 @@ public class HostTrustStatusPerformanceTest {
         }
         @Override
         public void execute() throws Exception {
-            agent.getPcrManifest();
+            
+            //------------ Added by dav10re --------
+            //agent.getPcrManifest();  //original
+            agent.getPcrManifest(false);
+            //---------------------------------
         }
     }
 
@@ -114,7 +118,10 @@ public class HostTrustStatusPerformanceTest {
         @Override
         public void execute() throws Exception {
             HostAgent agent = factory.getHostAgent("https://10.1.71.167:9999", new InsecureTlsPolicy());
-            agent.getPcrManifest();
+            //------------ Added by dav10re --------
+            //agent.getPcrManifest();  //original
+            agent.getPcrManifest(false);
+            //---------------------------------
         }
     }
     

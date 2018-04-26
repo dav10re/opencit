@@ -32,7 +32,14 @@ public class VmwareAgentTest {
         
         HostAgentFactory hostAgentFactory = new HostAgentFactory();
         HostAgent agent1 = hostAgentFactory.getHostAgent(new ConnectionString(host1), new InsecureTlsPolicy());
-        PcrManifest manifest1 = agent1.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest manifest1 = agent1.getPcrManifest(false);
+        //PcrManifest manifest1 = agent1.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         Pcr pcr1 = manifest1.getPcr(19);
         PcrEventLog eventLog1 = manifest1.getPcrEventLog(19);
         List<Measurement> list1 = eventLog1.getEventLog();
@@ -45,8 +52,14 @@ public class VmwareAgentTest {
         
         HostAgentFactory hostAgentFactory = new HostAgentFactory();
         HostAgent agent1 = hostAgentFactory.getHostAgent(new ConnectionString(host1), new InsecureTlsPolicy());
-        PcrManifest manifest1 = agent1.getPcrManifest();
-        Pcr pcr1 = manifest1.getPcr(19);
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest manifest1 = agent1.getPcrManifest(false);
+        //PcrManifest manifest1 = agent1.getPcrManifest(); //original
+        
+        //----------------------------------------------        Pcr pcr1 = manifest1.getPcr(19);
+        
         PcrEventLog eventLog1 = manifest1.getPcrEventLog(19);
         List<Measurement> list1 = eventLog1.getEventLog();
         log.debug("pcr 19 = {}", pcr1.toString());

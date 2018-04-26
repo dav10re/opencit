@@ -144,8 +144,12 @@ public class HostBO {
                 attestationReport = agent.getHostAttestationReport(requiredPCRs, challenge);
                 
                 //----------------- Added by dav10re ---------------
+                boolean ima = false;
                 
-                PcrManifest pcrManifestFromResponse = agent.getPcrManifest(challenge);
+                if(requiredPCRs.indexOf("10") != -1)
+                    ima = true;
+                
+                PcrManifest pcrManifestFromResponse = agent.getPcrManifest(challenge,ima);
                 measurementXmlLog = pcrManifestFromResponse.getMeasurementXml();
                 
                 //Getting ima measurements

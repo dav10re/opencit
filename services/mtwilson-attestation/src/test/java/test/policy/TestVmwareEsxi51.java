@@ -85,7 +85,14 @@ public class TestVmwareEsxi51 {
         TblHosts host = initNewHost();
         HostAgentFactory factory = new HostAgentFactory();
         HostAgent agent = factory.getHostAgent(host);
-        PcrManifest pcrManifest = agent.getPcrManifest();
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         assertNotNull(pcrManifest);
         for(int i=0; i<24; i++) {
             Pcr pcr = pcrManifest.getPcr(i);
@@ -209,7 +216,14 @@ public class TestVmwareEsxi51 {
             My.jpa().mwMle().create(vmm);
         }
         // whitelist step 5: get PCRs
-        PcrManifest pcrManifest = agent.getPcrManifest();        
+        
+        //--------------- Added by dav10re --------------
+        
+        PcrManifest pcrManifest = agent.getPcrManifest(false);
+        //PcrManifest pcrManifest = agent.getPcrManifest(); //original
+        
+        //----------------------------------------------
+        
         // whitelist step 6: create whitelist entries for BIOS PCRs
         String[] biosPcrList = bios.getRequiredManifestList().split(",");
         for(String biosPcrIndex : biosPcrList) {
@@ -354,7 +368,12 @@ public class TestVmwareEsxi51 {
         HostAgentFactory agentFactory = new HostAgentFactory();
         HostAgent agent = agentFactory.getHostAgent(host); // new ConnectionString(connection));//agentFactory.getHostAgent(host);
         HostReport hostReport = new HostReport();
-        hostReport.pcrManifest = agent.getPcrManifest();
+        
+        //---------- Added by dav10re -----------
+        //hostReport.pcrManifest = agent.getPcrManifest();   //original
+        hostReport.pcrManifest = agent.getPcrManifest(false);
+        //---------------------------------------
+        
         hostReport.variables = agent.getHostAttributes();
         HostTrustPolicyManager hostTrustPolicyFactory = new HostTrustPolicyManager(My.persistenceManager().getASData());
         Policy policy = hostTrustPolicyFactory.loadTrustPolicyForHost(host, hostname);

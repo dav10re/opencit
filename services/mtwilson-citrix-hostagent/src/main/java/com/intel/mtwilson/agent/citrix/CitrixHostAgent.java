@@ -261,13 +261,23 @@ BwIDAQAB
     }
     
     @Override
-    public PcrManifest getPcrManifest(Nonce challenge) throws IOException {
+    //-------------------- Added by dav10re -------------------
+    //public PcrManifest getPcrManifest(Nonce challenge) throws IOException { //original
+    public PcrManifest getPcrManifest(Nonce challenge, boolean ima) throws IOException {
+    //---------------------------------------------------------
         log.error("citrix does not support client-specified nonce; ignoring challenge nonce: {}", challenge);
-        return getPcrManifest();
+    
+    //-------------------- Added by dav10re -------------------
+        //return getPcrManifest(); //original
+        return getPcrManifest(ima);
+    //---------------------------------------------------------
     }    
 
     @Override
-    public PcrManifest getPcrManifest() throws IOException {
+    //-------------------- Added by dav10re -------------------
+    //public PcrManifest getPcrManifest() throws IOException {  //original
+    public PcrManifest getPcrManifest(boolean ima) throws IOException {
+    //---------------------------------------------------------
         PcrManifest pcrManifest = new PcrManifest();
         String pcrList = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24";
          HashMap<String, Pcr> pcrMap = client.getQuoteInformationForHost(pcrList);
