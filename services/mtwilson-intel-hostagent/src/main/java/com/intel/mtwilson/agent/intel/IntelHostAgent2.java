@@ -7,6 +7,13 @@ package com.intel.mtwilson.agent.intel;
 import com.intel.dcsg.cpg.crypto.Sha1Digest;
 import com.intel.dcsg.cpg.io.UUID;
 import com.intel.mtwilson.trustagent.model.HostInfo;
+
+//---------------- Added by dav10re --------
+
+import com.intel.mtwilson.agent.HostAgentForIma;
+
+//-----------------------------------------
+
 import com.intel.mtwilson.agent.HostAgent;
 import com.intel.mtwilson.datatypes.TxtHostRecord;
 import com.intel.mtwilson.model.Aik;
@@ -32,7 +39,12 @@ import org.slf4j.LoggerFactory;
  * Instances of VmwareAgent should be created by the VmwareAgentFactory
  * @author jbuhacoff
  */
-public class IntelHostAgent2 implements HostAgent {
+
+//-----  Adde by dav10re--------------------
+
+//public class IntelHostAgent2 implements HostAgent { //original
+public class IntelHostAgent2 implements HostAgentForIma {
+//-----------------------------------------
     private transient Logger log = LoggerFactory.getLogger(getClass());
     private transient final TrustAgentClient client;
 //    private final String hostname;
