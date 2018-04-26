@@ -634,7 +634,7 @@ public class TAHelper {
             //----------------- Added by dav10re -------------------
             
             if (imaMeasurementString != null && !imaMeasurementString.isEmpty())
-                pcrManifest.setImaMeasurementXml(tcbMeasurementString);
+                pcrManifest.setImaMeasurementXml(imaMeasurementString);
             
             //------------------------------------------------------
             
