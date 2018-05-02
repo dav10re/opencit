@@ -553,7 +553,7 @@ public class JpaPolicyReader {
             
             // We should verify the integrity of the measurement log by calculating the final hash and
             // comparing it to the value of PCR 10 in the quote.
-            XmlImaMeasurementLogIntegrity xmlImaMeasurementLogIntegrityRule = new XmlImaMeasurementLogIntegrity(null, pcrIndex);
+            XmlImaMeasurementLogIntegrity xmlImaMeasurementLogIntegrityRule = new XmlImaMeasurementLogIntegrity("", pcrIndex);
             xmlImaMeasurementLogIntegrityRule.setMarkers(TrustMarker.VMM.name());
             list.add(xmlImaMeasurementLogIntegrityRule);
             

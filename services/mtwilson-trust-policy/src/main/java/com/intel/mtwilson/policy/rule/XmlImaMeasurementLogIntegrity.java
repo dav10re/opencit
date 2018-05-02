@@ -47,13 +47,13 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     public String getExpectedValue() { return expectedValue; }
     
     //Set the expected value got from the quote
-    public void setExpectedValue(HostReport hostReport) {
-        DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
+    //public void setExpectedValue(HostReport hostReport) {
+        //DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
         
         //Get the PCR 10 from the quote
-        this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
+        //this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
         
-    }
+    //}
 
     public PcrIndex getPcrIndex() {
         return pcrIndex;
@@ -63,7 +63,9 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     @Override
     public RuleResult apply(HostReport hostReport) {
         
-        setExpectedValue(hostReport);
+        //setExpectedValue(hostReport);
+        DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
+        this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
         log.debug("XmlImaMeasurementLogIntegrity: setting the expected value got from the quote: {}",expectedValue);
 
         
