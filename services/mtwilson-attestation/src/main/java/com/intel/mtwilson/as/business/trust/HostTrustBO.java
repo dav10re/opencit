@@ -1634,6 +1634,7 @@ public class HostTrustBO {
                                             moduleLogJpa.create(event);
                                         
                                         }
+                                    }
                                     //------------------------------------------
                                     
                                     
