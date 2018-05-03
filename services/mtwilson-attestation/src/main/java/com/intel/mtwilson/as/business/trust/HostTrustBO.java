@@ -1608,9 +1608,37 @@ public class HostTrustBO {
                                         throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
                                     }
 
+                                    
+                                    if( rule instanceof XmlImaMeasurementLogEquals ){
+                                        log.debug("TblModuleManifestLog: {} with value {} and whitelist {}", m.getLabel(), mInfo.get("Actual_Value"), m.getValue().toString());
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("IMA-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(mInfo.get("Actual_Value"));
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        }
+                                        
+                                        
+                                    }else{
+                                    
+                                        TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                        if (findByTaLogIdAndName == null) {
+                                            TblModuleManifestLog event = new TblModuleManifestLog();
+                                            event.setName("tbootxm-" + m.getLabel());
+                                            event.setTaLogId(pcr);
+                                            event.setValue(mInfo.get("Actual_Value"));
+                                            event.setWhitelistValue(m.getValue().toString());
+                                            moduleLogJpa.create(event);
+                                        
+                                        }
                                     //------------------------------------------
                                     
-                                    TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                    
+                                    // Original
+                                    /*TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
                                     if (findByTaLogIdAndName == null) {
                                         TblModuleManifestLog event = new TblModuleManifestLog();
                                         event.setName("tbootxm-" + m.getLabel());
@@ -1618,7 +1646,7 @@ public class HostTrustBO {
                                         event.setValue(mInfo.get("Actual_Value"));
                                         event.setWhitelistValue(m.getValue().toString());
                                         moduleLogJpa.create(event);
-                                    } 
+                                    } */
                                 }
                             }
                         }

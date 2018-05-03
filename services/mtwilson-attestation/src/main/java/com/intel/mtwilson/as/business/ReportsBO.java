@@ -415,7 +415,8 @@ public class ReportsBO {
                     */
                      
                     if(moduleManifestLog.getName().indexOf("IMA-") != -1)
-                        moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName(),
+                        logger.debug("IMA moduleManifestLog: {}", moduleManifestLog.getName().substring(("IMA-").length()));
+                        moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
                                 moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
                     else
                         moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
