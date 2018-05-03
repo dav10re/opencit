@@ -404,9 +404,26 @@ public class ReportsBO {
                                                               moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0);
                     temptbootxmSubModuleReport.put(subModuleLogReport.getComponentName(), subModuleLogReport);
                 } else {
-                    logger.debug("addManifestLogs - Adding the sub module {} for non-tbootxm module with errors.", moduleManifestLog.getName());                    
-                    moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
+                    logger.debug("addManifestLogs - Adding the sub module {} for non-tbootxm module with errors.", moduleManifestLog.getName());
+                    
+                    //------------ Added by dav10re ------------------
+                    /* When an error, that means a mismatch between whitelist value and actual value,
+                     occurs, there is a Module with the same name of the right module but with "IMA-" prefix
+                     For instance: if we have modified the /opt/trustagent/bin/tpm2-quote.sh module, we'll find
+                     the IMA-/opt/trustagent/bin/tpm2-quote.sh module
+                     
+                    */
+                     
+                    if(moduleManifestLog.getName().indexOf("IMA-") != -1)
+                        moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName(),
+                                moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
+                    else
+                        moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
+                                moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
+                    //------------------------------------------------
+                    /*moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
                         moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
+                    */ //original statement
                 }
             }
         }
