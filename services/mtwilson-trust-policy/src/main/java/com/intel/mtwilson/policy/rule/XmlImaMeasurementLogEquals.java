@@ -113,10 +113,10 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
         return report;
     }
     
-    private void raiseFaultForModifiedEntries(ArrayList<Measurement> hostActualUnexpected, ArrayList<Measurement> expected, RuleResult report) {
+    private void raiseFaultForModifiedEntries(ArrayList<Measurement> hostActualUnexpected, ArrayList<Measurement> expectedmeas, RuleResult report) {
         ArrayList<Measurement> hostModifiedModules = new ArrayList<>();
         ArrayList<Measurement> tempHostActualUnexpected = new ArrayList<>(hostActualUnexpected);
-        ArrayList<Measurement> tempHostActualMissing = new ArrayList<>(expected);
+        ArrayList<Measurement> tempHostActualMissing = new ArrayList<>(expectedmeas);
         
         try {
             for (Measurement tempUnexpected : tempHostActualUnexpected) {
