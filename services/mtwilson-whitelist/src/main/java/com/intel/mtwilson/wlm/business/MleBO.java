@@ -534,7 +534,9 @@ public class MleBO {
                     
                     // ----------------- Added by dav10re ----------------
                     // Do not set whitelist value for PCR 10
-                    if(!manifestData.getName().equals("10"))
+                    if(manifestData.getName().equals("10"))
+                        pcrManifest.setValue("");
+                    else
                         pcrManifest.setValue(manifestData.getValue());
                     // pcrManifest.setValue(manifestData.getValue()); //original
 
