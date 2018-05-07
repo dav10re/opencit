@@ -522,15 +522,6 @@ public class MleBO {
                     log.debug("add pcr manifest name: {}", manifestData.getName());
                     log.debug("add pcr manifest value: '{}'", manifestData.getValue());
 
-                    //----------------- Added by dav10re -------------------
-                    
-                    //Exclude pcr 10 value from creating the whitelist value
-                    
-                    if(manifestData.getName().equals("10"))
-                        continue;
-                    
-                    //------------------------------------------------------
-                    
                     TblPcrManifest pcrManifest = new TblPcrManifest();
                     if (uuid != null && !uuid.isEmpty()) {
                         pcrManifest.setUuid_hex(uuid);
@@ -541,7 +532,15 @@ public class MleBO {
                     // Bug: 375. Need to ensure we are accepting only valid hex strings.
                     validateWhitelistValue(manifestData.getPcrBank(), manifestData.getName(), manifestData.getValue()); // throws exception if invalid
                     
-                    pcrManifest.setValue(manifestData.getValue());
+                    // ----------------- Added by dav10re ----------------
+                    // Do not set whitelist value for PCR 10
+                    if(!manifestData.getName().equals("10"))
+                        pcrManifest.setValue(manifestData.getValue());
+                    // pcrManifest.setValue(manifestData.getValue()); //original
+
+                    // --------------------------------------------------
+                    
+                    
                     pcrManifest.setPcrBank(manifestData.getPcrBank());
                     // @since 1.1 we are relying on the audit log for "created on", "created by", etc. type information
                                                                                                 /*
