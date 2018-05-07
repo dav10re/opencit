@@ -1359,10 +1359,10 @@ public class HostBO {
                             
                             //------------ Added  by dav10re -------------
                             
-                            //With the following  if clause, I want to esclude to insert the pcr 10 sha256 in
-                            //manifest data
+                            //With the following  if clause, I want to esclude to insert the pcr 10 in
+                            //manifest data because I don't want to create a whitelist value for pcr 10
                             
-                            if(vmmPCR.equals("10") && bank.equalsIgnoreCase("SHA256"))
+                            if(vmmPCR.equals("10"))// && bank.equalsIgnoreCase("SHA256"))
                                 continue;
                             
                             log.debug("CONFIGURE WhiteList: PCR {} and bank {}", vmmPCR, bank);
