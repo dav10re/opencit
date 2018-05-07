@@ -93,7 +93,7 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
                 //                log.debug("XmlMeasurementLogEquals: Verifying {} against {}", expected.toString(), actualModules.toString());  //throwing NPE if expected value empty
                 hostActualMissing.removeAll(actualModules); // hostActualMissing = expected modules - actual modules = only modules that should be there but aren't
                 
-                raiseFaultForModifiedEntries(hostActualUnexpected, expected.getMeasurements(), report);
+                raiseFaultForModifiedEntries(hostActualUnexpected, new ArrayList<>(expected.getMeasurements()), report);
                 
                 if( !hostActualUnexpected.isEmpty() ) {
                     log.debug("XmlImaMeasurementLogEquals : Host is having #{} additional modules compared to the white list.", hostActualUnexpected.size());
