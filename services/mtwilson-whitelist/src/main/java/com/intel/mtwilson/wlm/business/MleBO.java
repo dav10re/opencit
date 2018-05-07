@@ -522,6 +522,15 @@ public class MleBO {
                     log.debug("add pcr manifest name: {}", manifestData.getName());
                     log.debug("add pcr manifest value: '{}'", manifestData.getValue());
 
+                    //----------------- Added by dav10re -------------------
+                    
+                    //Exclude pcr 10 value from creating the whitelist value
+                    
+                    if(manifestData.getName().equals("10"))
+                        continue;
+                    
+                    //------------------------------------------------------
+                    
                     TblPcrManifest pcrManifest = new TblPcrManifest();
                     if (uuid != null && !uuid.isEmpty()) {
                         pcrManifest.setUuid_hex(uuid);

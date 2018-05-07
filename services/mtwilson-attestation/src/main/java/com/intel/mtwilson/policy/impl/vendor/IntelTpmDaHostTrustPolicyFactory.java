@@ -89,18 +89,18 @@ public class IntelTpmDaHostTrustPolicyFactory extends IntelHostTrustPolicyFactor
             /* The following if will remove the rule for pcr 10 because it doesn't have a sha256 value (the best bank for the host is sha256)*/
             
             //The original if clause
-            /*
+            
              
              if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank())) {
              it.remove();
              
-             */
+             
             
             //if there is the pcr 10, do not remove the PcrConstantRule
             
-            if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank()) && !r.getExpectedPcr().getIndex().toString().equals("10")) {
+            /*if (r.getExpectedPcr().getPcrBank() != DigestAlgorithm.valueOf(host.getPcrBank()) && !r.getExpectedPcr().getIndex().toString().equals("10")) {
                 it.remove();
-            
+            */
             //-----------------------------------------
                 
             } else {
