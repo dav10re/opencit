@@ -414,11 +414,14 @@ public class ReportsBO {
                      
                     */
                      
-                    /*if(moduleManifestLog.getName().indexOf("IMA-") != -1){
+                    if(moduleManifestLog.getName().indexOf("IMA-") != -1){
                         logger.debug("IMA moduleManifestLog: {}", moduleManifestLog.getName().substring(("IMA-").length()));
-                        moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
-                                moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
-                    }else*/
+                        /*moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
+                                moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));*/
+                        manifest.getModuleLogs().add(new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
+                                                                         moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0))
+                        
+                    }else
                         moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
                                 moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
                     //------------------------------------------------
@@ -449,7 +452,8 @@ public class ReportsBO {
                         moduleLogReport = new ModuleLogReport(m.getLabel(), m.getValue().toString(), m.getValue().toString(),1);
                     }
                     //if (!moduleReports.containsKey(moduleLogReport.getComponentName())) //original
-                    moduleReports.put(moduleLogReport.getComponentName(), moduleLogReport);
+                    //moduleReports.put(moduleLogReport.getComponentName(), moduleLogReport);
+                    manifest.getModuleLogs().add(moduleLogReport);
                 }
                 
             }
