@@ -419,7 +419,7 @@ public class ReportsBO {
                         /*moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
                                 moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));*/
                         manifest.getModuleLogs().add(new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
-                                                                         moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0))
+                                                                         moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
                         
                     }else
                         moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
