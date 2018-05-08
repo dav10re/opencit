@@ -20,6 +20,7 @@ import com.intel.mtwilson.policy.fault.XmlMeasurementLogContainsUnexpectedEntrie
 import com.intel.mtwilson.policy.fault.XmlMeasurementLogMissing;
 import com.intel.mtwilson.policy.fault.XmlMeasurementLogMissingExpectedEntries;
 import com.intel.mtwilson.policy.fault.XmlMeasurementLogValueMismatchEntries;
+import com.intel.mtwilson.policy.fault.XmlImaMeasurementLogValueMismatchEntries;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -140,6 +141,7 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
                         
                         hostModifiedModules.add(measurementToAdd);
                         hostActualUnexpected.remove(tempUnexpected);
+                        break;
                         //hostActualMissing.remove(tempMissing);
                     }
                 }
@@ -147,7 +149,10 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
             
             if (!hostModifiedModules.isEmpty()) {
                 log.debug("XmlImaMeasurementLogEquals : Host has updated #{} modules compared to the white list.", hostModifiedModules.size());
-                report.fault(new XmlMeasurementLogValueMismatchEntries(expected.getPcrIndex(), new HashSet<>(hostModifiedModules)));
+                
+                //report.fault(new XmlMeasurementLogValueMismatchEntries(expected.getPcrIndex(), new HashSet<>(hostModifiedModules)));   //original
+                
+                report.fault(new XmlImaMeasurementLogValueMismatchEntries(expected.getPcrIndex(), new ArrayList<>(hostModifiedModules)));
             } else {
                 log.debug("RaiseFaultForModifiedEntries (IMA): No updated modules found.");
             }

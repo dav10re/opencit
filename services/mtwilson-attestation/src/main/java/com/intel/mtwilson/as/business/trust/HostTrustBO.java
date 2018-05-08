@@ -63,6 +63,7 @@ import com.intel.mtwilson.policy.rule.XmlMeasurementLogEquals;
 
 //--------------- Added by dav10re ---------------
 import com.intel.mtwilson.policy.rule.XmlImaMeasurementLogEquals;
+import com.intel.mtwilson.policy.fault.XmlImaMeasurementLogValueMismatchEntries;
 //------------------------------------------------
 
 import com.intel.mtwilson.policy.rule.XmlMeasurementLogIntegrity;
@@ -1565,6 +1566,74 @@ public class HostTrustBO {
                     
                     List<Fault> faults = result.getFaults();
                     for(Fault fault : faults) {
+                        
+                        //----------- Added by dav10re ----------
+                        
+                        if( fault instanceof XmlImaMeasurementLogValueMismatchEntries ) {
+                            log.debug("Host is having ima modules for which the values are not matching the configured white list.");
+                            XmlImaMeasurementLogValueMismatchEntries mismatchEntriesFault = (XmlImaMeasurementLogValueMismatchEntries)fault;
+                            
+                            if (pcr != null) {
+                                if (pcr.getId() != null) {
+                                    log.debug("TaTblLog ID {} already exists.", pcr.getId());
+                                    pcr = talogJpa.findTblTaLog(pcr.getId());
+                                }
+                                pcr.setTrustStatus(false);
+                                if (pcr.getError()== null || pcr.getError().isEmpty())
+                                    pcr.setError("Mismatch of tbootxm modules");
+                                else
+                                    pcr.setError(pcr.getError() + " and " + " Mismatch of tbootxm modules");
+                                if (pcr.getId() == null) {
+                                    log.debug("TaTblLog ID does not exist. Creating a new one. {}-{}", pcr.getTrustStatus(), pcr.getError());
+                                    talogJpa.create(pcr);
+                                    log.debug("TaTblLog ID created - {}", pcr.getId());
+                                } else {
+                                    try {
+                                        log.debug("Editing the existing TaTblLog ID {} . {} - {}", pcr.getId(), pcr.getTrustStatus(), pcr.getError());
+                                        talogJpa.edit(pcr);
+                                    } catch (IllegalOrphanException | NonexistentEntityException | ASDataException ex) {
+                                        log.error("Error updating the status in the TaLog table.", ex);
+                                    }
+                                }
+                                taLogMap.put(mismatchEntriesFault.getPcrIndex() + type, pcr);
+                                
+                                List<Measurement> mismatchEntries = mismatchEntriesFault.getMismatchEntries();
+                                for(Measurement m : mismatchEntries) {
+                                    Map<String, String> mInfo = m.getInfo();
+                                    log.debug("Updated entry : " + m.getLabel() + "||" + m.getValue().toString());
+                                    // try to find the same module in the host report (hopefully it has the same name , and only the value changed)
+                                    if( report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getImaMeasurementXml() == null ) {
+                                        throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
+                                    }
+                                    
+                                    
+                                    if( rule instanceof XmlImaMeasurementLogEquals &&  (report.getHostReport().pcrManifest == null || report.getHostReport().pcrManifest.getImaMeasurementXml() == null) ) {
+                                        throw new ASException(ErrorCode.AS_MISSING_PCR_MANIFEST);
+                                    }
+                                    
+                                    
+                                    
+                                    log.debug("TblModuleManifestLog: {} with value {} and whitelist {}", m.getLabel(), mInfo.get("Actual_Value"), m.getValue().toString());
+                                    TblModuleManifestLog findByTaLogIdAndName = moduleLogJpa.findByTaLogIdAndName(pcr, m.getLabel());
+                                    if (findByTaLogIdAndName == null) {
+                                        TblModuleManifestLog event = new TblModuleManifestLog();
+                                        event.setName("IMA-" + m.getLabel());
+                                        event.setTaLogId(pcr);
+                                        event.setValue(mInfo.get("Actual_Value"));
+                                        event.setWhitelistValue(m.getValue().toString());
+                                        moduleLogJpa.create(event);
+                                    }
+                                        
+                                        
+                                }
+                            }
+                        }
+                        
+                        
+                        
+                        
+                        //--------------------------------------
+                        
                         if( fault instanceof XmlMeasurementLogValueMismatchEntries ) { 
                             log.debug("Host is having modules for which the values are not matching the configured white list.");
                             XmlMeasurementLogValueMismatchEntries mismatchEntriesFault = (XmlMeasurementLogValueMismatchEntries)fault;
@@ -1797,8 +1866,8 @@ public class HostTrustBO {
                                             TblModuleManifestLog event = new TblModuleManifestLog();
                                             event.setName("IMA-" + m.getLabel());
                                             event.setTaLogId(pcr);
-                                            event.setValue(""); // Since the module is missing, there is no current value.
-                                            event.setWhitelistValue(m.getValue().toString());
+                                            event.setValue(m.getValue().toString());
+                                            event.setWhitelistValue("");// Since the module is missing, there is no whitelist value.
                                             moduleLogJpa.create(event);
                                         }
                                         
