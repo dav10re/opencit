@@ -463,6 +463,14 @@ function getFailureReportSuccess(responseJSON) {
                     '<td class="failureReportRow4" >' + reportdata[item].whiteListValue + '</td>' +
                     '</tr>';
 
+            //--------------- Added by dav10re ---------------------------
+            //In case of IMA I want to have the log in the order in which it has been received. So do not sort
+            var no_sort = false;
+            if(reportdata[item].name == 10)
+                no_sort = true;
+            //------------------------------------------------------------
+            
+            
             var moduleLog = reportdata[item].moduleLogs;
             str += '<tr style="display: none;">';
             if (moduleLog.length > 0 && reportdata[item].moduleLogs[0].componentName != null) {
@@ -476,7 +484,15 @@ function getFailureReportSuccess(responseJSON) {
                         '<th class="failureReportSubRow3">WhiteList Value</th>' +
                         '</tr></thead>';
                 
-                moduleLog.sort(byProperty("componentName"));                
+                //--------------- Added by dav10re ---------------------------
+                
+                if(no_sort == false)
+                    moduleLog.sort(byProperty("componentName"));
+                
+                //moduleLog.sort(byProperty("componentName"));  //original
+                //------------------------------------------------------------
+                
+                
                 for (var logs in moduleLog) {
                     var logclass = null;
                     if (logs % 2 === 0) {

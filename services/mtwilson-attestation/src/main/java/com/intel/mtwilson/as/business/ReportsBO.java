@@ -448,8 +448,8 @@ public class ReportsBO {
                     } else {
                         moduleLogReport = new ModuleLogReport(m.getLabel(), m.getValue().toString(), m.getValue().toString(),1);
                     }
-                    if (!moduleReports.containsKey(moduleLogReport.getComponentName()))
-                        moduleReports.put(moduleLogReport.getComponentName(), moduleLogReport);
+                    //if (!moduleReports.containsKey(moduleLogReport.getComponentName())) //original
+                    moduleReports.put(moduleLogReport.getComponentName(), moduleLogReport);
                 }
                 
             }
