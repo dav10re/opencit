@@ -485,7 +485,7 @@ function getFailureReportSuccess(responseJSON) {
                         '</tr></thead>';
                 
                 //--------------- Added by dav10re ---------------------------
-                
+                //IMA case
                 if(no_sort == false)
                     moduleLog.sort(byProperty("componentName"));
                 
@@ -501,6 +501,18 @@ function getFailureReportSuccess(responseJSON) {
                         logclass = 'oddRow';
                     }
                     styleUntrusted = moduleLog[logs].trustStatus == 0 ? "color:red;" : "";
+                    
+                    //---------------- Added by dav10re ------------------
+                    //Delete IMA-prefix inserted when new file or modified file occurs
+                    if(no_sort == true){
+                        
+                        if(moduleLog[logs].componentName.indexOf("IMA-") != -1)
+                            moduleLog[logs].componentName = moduleLog[logs].componentName.substring('IMA-'.length);
+                        
+                        
+                    }
+                    //----------------------------------------------------
+                    
                     str += '<tr class="' + logclass + '">' +
                             '<td align="center" class="failureReportRow1"><a isColpase="true" onclick="fnColapseFailReport(this)"><img class="imageClass" border="0" alt="-" src="images/plus.jpg"></a></td>'+
                             '<td class="failureReportSubRow1" name="mleName">' + moduleLog[logs].componentName + '</td>' +

@@ -414,11 +414,11 @@ public class ReportsBO {
                      
                     */
                      
-                    if(moduleManifestLog.getName().indexOf("IMA-") != -1){
+                    /*if(moduleManifestLog.getName().indexOf("IMA-") != -1){
                         logger.debug("IMA moduleManifestLog: {}", moduleManifestLog.getName().substring(("IMA-").length()));
                         moduleReports.put(moduleManifestLog.getName().substring(("IMA-").length()), new ModuleLogReport(moduleManifestLog.getName().substring(("IMA-").length()),
                                 moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
-                    }else
+                    }else*/
                         moduleReports.put(moduleManifestLog.getName(), new ModuleLogReport(moduleManifestLog.getName(),
                                 moduleManifestLog.getValue(), moduleManifestLog.getWhitelistValue(),0));
                     //------------------------------------------------
