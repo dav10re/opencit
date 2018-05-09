@@ -117,34 +117,40 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
     private void raiseFaultForModifiedEntries(ArrayList<Measurement> hostActualUnexpected, ArrayList<Measurement> expectedmeas, RuleResult report) {
         ArrayList<Measurement> hostModifiedModules = new ArrayList<>();
         ArrayList<Measurement> tempHostActualUnexpected = new ArrayList<>(hostActualUnexpected);
-        ArrayList<Measurement> tempHostActualMissing = new ArrayList<>(expectedmeas);
+        //ArrayList<Measurement> tempHostActualMissing = new ArrayList<>(expectedmeas);
+        HashMap<String,Measurement> tempHostActualMissing = new HashMap<String,Measurement>();
+        for(Measurement meas: expectedmeas)
+            tempHostActualMissing.put(meas.getLabel(), meas);
+        
         
         try {
             for (Measurement tempUnexpected : tempHostActualUnexpected) {
-                for (Measurement tempMissing : tempHostActualMissing) {
-                    log.debug("RaiseFaultForModifiedEntries (IMA): Comparing module {} with hash {} to module {} with hash {}.", tempUnexpected.getLabel(),
-                              tempUnexpected.getValue().toString(), tempMissing.getLabel(), tempMissing.getValue().toString());
-                    if (tempUnexpected.getLabel().equalsIgnoreCase(tempMissing.getLabel())) {
-                        log.debug("(IMA) Adding the entry to the list of modified modules and deleting from the other 2 lists.");
-                        
-                        // We are storing the whitelist value and the actual value so that we do not need to compare again when generating the reports.
-                        HashMap<String, String> tempHashMapToAdd = new HashMap<>();
-                        tempHashMapToAdd.put("Actual_Value", tempUnexpected.getValue().toString());
-                        Measurement measurementToAdd;
-                        
-                        //This if clause controls that the digest is a SHA1/SHA256 digest even if a IMA digest is always SHA1
-                        if (Sha256Digest.isValid(tempMissing.getValue().toByteArray())) {
-                            measurementToAdd = new MeasurementSha256((Sha256Digest)tempMissing.getValue(), tempMissing.getLabel(), tempHashMapToAdd);
-                        } else {
-                            measurementToAdd = new MeasurementSha1((Sha1Digest)tempMissing.getValue(), tempMissing.getLabel(), tempHashMapToAdd);
-                        }
-                        
-                        hostModifiedModules.add(measurementToAdd);
-                        hostActualUnexpected.remove(tempUnexpected);
-                        break;
-                        //hostActualMissing.remove(tempMissing);
-                    }
+                
+                /*log.debug("RaiseFaultForModifiedEntries (IMA): Comparing module {} with hash {} to module {} with hash {}.", tempUnexpected.getLabel(),
+                 tempUnexpected.getValue().toString(), tempMissing.getLabel(), tempMissing.getValue().toString());*/
+                //if (tempUnexpected.getLabel().equalsIgnoreCase(tempMissing.getLabel())) {
+                Measurement tempMissing = tempHostActualMissing.get(tempUnexpected.getLabel());
+                if(tempMissing != null){
+                    log.debug("(IMA) Adding the entry to the list of modified modules and deleting from the other 2 lists.");
+                    
+                    // We are storing the whitelist value and the actual value so that we do not need to compare again when generating the reports.
+                    HashMap<String, String> tempHashMapToAdd = new HashMap<>();
+                    tempHashMapToAdd.put("Actual_Value", tempUnexpected.getValue().toString());
+                    Measurement measurementToAdd;
+                    
+                    //This if clause controls that the digest is a SHA1/SHA256 digest even if a IMA digest is always SHA1
+                    /*if (Sha256Digest.isValid(tempMissing.getValue().toByteArray())) {
+                     measurementToAdd = new MeasurementSha256((Sha256Digest)tempMissing.getValue(), tempMissing.getLabel(), tempHashMapToAdd);
+                     } else {*/
+                    measurementToAdd = new MeasurementSha1((Sha1Digest)tempMissing.getValue(), tempMissing.getLabel(), tempHashMapToAdd);
+                    //}
+                    
+                    hostModifiedModules.add(measurementToAdd);
+                    hostActualUnexpected.remove(tempUnexpected);
+                    
+                    //hostActualMissing.remove(tempMissing);
                 }
+                //}
             }
             
             if (!hostModifiedModules.isEmpty()) {
@@ -162,5 +168,6 @@ public class XmlImaMeasurementLogEquals extends BaseRule {
         }
     }
 }
+
 
 
