@@ -1079,6 +1079,7 @@ public class HostTrustBO {
      */
     private void logPcrTrustStatus(TblHosts host, TrustReport report, Date today) {
         try {
+            long t0 = System.currentTimeMillis();
             TblTaLogJpaController talogJpa = My.jpa().mwTaLog();
             TblModuleManifestLogJpaController moduleLogJpa = My.jpa().mwModuleManifestLog();
             List<String> biosPcrList = Arrays.asList(host.getBiosMleId().getRequiredManifestList().split(","));
@@ -1899,6 +1900,10 @@ public class HostTrustBO {
                     talogJpa.create(pcr);
                 }
             }
+            
+            long t1 = System.currentTimeMillis();
+            log.info("performance: logPcrTrustStatus: {} ms", t1-t0);
+            
         } catch (IOException ex) {
             log.error("Error during logging of the PCR trust status", ex);
             throw new ASException(ErrorCode.SYSTEM_ERROR, ex.getClass().getSimpleName());
@@ -2168,8 +2173,12 @@ public class HostTrustBO {
             TrustReport hostTrustReport = getTrustReportForHost(tblHosts, tblHosts.getName(), challenge); // issue #4978 use specified nonce, if available
             log.debug("TRUSTREPORT: {}", mapper.writeValueAsString(hostTrustReport));
             
+            long t0 = System.currentTimeMillis();
             logTrustReport(tblHosts, hostTrustReport); // Need to cache the attestation report ### v1 requirement to log to mw_ta_log
 
+            long t1 = System.currentTimeMillis();
+            log.info("performance: build TblTaLog objects: {}ms", t1-t0);
+            
             HostTrustStatus trust = new HostTrustStatus();
             trust.bios = hostTrustReport.isTrustedForMarker(TrustMarker.BIOS.name());
             trust.vmm = hostTrustReport.isTrustedForMarker(TrustMarker.VMM.name());
@@ -2206,6 +2215,9 @@ public class HostTrustBO {
             }
             
             log.debug("Creating host assertion for: {}", host.getHostName());
+            
+            long t2 = System.currentTimeMillis();
+            
             SamlAssertion samlAssertion = getSamlGenerator().generateHostAssertion(host, tagCertificate, null);
             log.debug("Expiry {}" , samlAssertion.expiry_ts.toString());
 
@@ -2217,6 +2229,9 @@ public class HostTrustBO {
                 
             My.jpa().mwSamlAssertion().create(tblSamlAssertion);
 
+            long t3 = System.currentTimeMillis();
+            log.info("performance: host assertion created in: {}ms", t3-t2);
+            
             return buildHostAttestation(tblHosts, tblSamlAssertion);
         } catch (ASException e) {
             // ASException sets HTTP Status to 400 for all errors
@@ -2385,6 +2400,8 @@ public class HostTrustBO {
     }
     
     public HostAttestation buildHostAttestation(TblHosts tblHosts, TblSamlAssertion tblSamlAssertion) throws IOException {
+        long t0 = System.currentTimeMillis();
+        
         HostAttestation hostAttestation = new HostAttestation();
         hostAttestation.setAikSha256(tblSamlAssertion.getHostId().getAikSha256());
         //hostAttestation.setChallenge(tblHosts.getChallenge());
@@ -2399,6 +2416,8 @@ public class HostTrustBO {
         hostTrustStatus.vmm = tblSamlAssertion.getVmmTrust();
         //hostTrustStatus.asset_tag = tblSamlAssertion.getAssetTagTrust();
         hostAttestation.setHostTrustResponse(new HostTrustResponse(new Hostname(tblSamlAssertion.getHostId().getName()), hostTrustStatus));
+        long t1 = System.currentTimeMillis();
+        log.info("performance: host attestation built in: {} ms", t1-t0);
         return hostAttestation;
     }
 
