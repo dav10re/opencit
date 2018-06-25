@@ -22,7 +22,11 @@ import com.intel.mtwilson.policy.fault.XmlMeasurementValueMismatch;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.security.MessageDigest;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.security.NoSuchAlgorithmException;
+import com.intel.mtwilson.codec.HexUtil;
 /**
  * This policy verifies the integrity of the ima measurement log provided by the host. It does
  * this integrity verification by calculating the expected final hash value by extending
@@ -33,7 +37,7 @@ import org.slf4j.LoggerFactory;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class XmlImaMeasurementLogIntegrity extends BaseRule {
     private Logger log = LoggerFactory.getLogger(getClass());
-
+    
     private String expectedValue;
     private PcrIndex pcrIndex;
     
@@ -48,18 +52,18 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     
     //Set the expected value got from the quote
     //public void setExpectedValue(HostReport hostReport) {
-        //DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
-        
-        //Get the PCR 10 from the quote
-        //this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
-        
+    //DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
+    
+    //Get the PCR 10 from the quote
+    //this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
+    
     //}
-
+    
     public PcrIndex getPcrIndex() {
         return pcrIndex;
     }
     
-
+    
     @Override
     public RuleResult apply(HostReport hostReport) {
         
@@ -67,7 +71,7 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
         DigestAlgorithm digestAl = DigestAlgorithm.SHA1;
         this.expectedValue = hostReport.pcrManifest.getPcrs(digestAl).get(10).getValue().toString();
         log.debug("XmlImaMeasurementLogIntegrity: setting the expected value got from the quote: {}",expectedValue);
-
+        
         
         log.debug("XmlImaMeasurementLogIntegrity: About to apply the XmlImaMeasurementLogIntegrity policy");
         RuleResult report = new RuleResult(this);
@@ -77,7 +81,7 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
             report.fault(new XmlMeasurementLogMissing());
             
         } else {
-
+            
             List<Measurement> measurements = new XmlImaMeasurementLog(this.pcrIndex, hostReport.pcrManifest.getImaMeasurementXml()).getMeasurements();
             log.debug("XmlImaMeasurementLogIntegrity: Retrieved #{} of measurements from the log.", measurements.size());
             if( measurements.size() > 0 ) {
@@ -109,15 +113,49 @@ public class XmlImaMeasurementLogIntegrity extends BaseRule {
     }
     
     private Sha1Digest computeHistory(List<Measurement> list) {
-        // start with a default value of zero...  that should be the initial value of every PCR ..  if a pcr is reset after boot the tpm usually sets its starting value at -1 so the end result is different , which we could then catch here when the hashes don't match        
-            Sha1Digest result = Sha1Digest.ZERO;
-            for (Measurement m : list) {
-                //result = result.extend(m.getValue().toString().getBytes());
-                if (m.getValue() != null && m.getValue().toString() != null) {
-                    log.debug("XmlImaMeasurementLogIntegrity-computeHistory: Extending value [{}] to current value [{}]", m.getValue().toString(), result.toString());
-                    result = result.extend(Sha1Digest.valueOfHex(m.getValue().toString()));
-                }
+        // start with a default value of zero...  that should be the initial value of every PCR ..  if a pcr is reset after boot the tpm usually sets its starting value at -1 so the end result is different , which we could then catch here when the hashes don't match
+        Sha1Digest result = Sha1Digest.ZERO;
+        for (Measurement m : list) {
+            //result = result.extend(m.getValue().toString().getBytes());
+            if (m.getValue() != null && m.getValue().toString() != null) {
+                log.debug("XmlImaMeasurementLogIntegrity-computeHistory: Extending value [{}] to current value [{}]", m.getValue().toString(), result.toString());
+                result = result.extend(Sha1Digest.valueOf(getTemplateHash(m)));
+                //result = result.extend(Sha1Digest.valueOfHex(m.getValue().toString()));
             }
-            return result;     
+        }
+        return result;
+    }
+    
+    //This method is usefull since the aggregate calculation requires template-hash and not filedata-hash
+    private byte[] getTemplateHash(Measurement m){
+        
+        char c = '\0';
+        
+        byte[] fhashhex = HexUtil.toByteArray(m.getValue().toString());
+        
+        
+        byte[] fname=(m.getLabel()+c).getBytes();
+        
+        byte[] algname=("sha1:"+c).getBytes();
+        
+        int tot_len = fhashhex.length + algname.length;
+        
+        byte[] bytes1 = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(tot_len).array();
+        byte[] bytes2 = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(fname.length).array();
+        try{
+            MessageDigest hash = MessageDigest.getInstance("SHA-1");
+            hash.update(bytes1);
+            hash.update(algname);
+            hash.update(fhashhex);
+            hash.update(bytes2);
+            hash.update(fname);
+            return hash.digest();
+        }catch(NoSuchAlgorithmException e){
+            
+            log.debug("NoSuchAlgorithmException: alghoritm not found");
+            
+        }
+        return null;
     }
 }
+
