@@ -435,7 +435,11 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-project-info-reports-plugin</artifactId>
+                        <version>2.9</version>
+                    </plugin>
                     <!-- begin copy dependencies plugin (to create zip file) -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
